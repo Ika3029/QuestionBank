@@ -1,0 +1,846 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MQBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ChapterDetail">
+          <Key>
+            <PropertyRef Name="ChapterDetailPK" />
+          </Key>
+          <Property Name="ChapterDetailPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ChapterDetailContent" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ExamDetail">
+          <Key>
+            <PropertyRef Name="ExamDetPK" />
+          </Key>
+          <Property Name="ExamDetPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExamID" Type="int" Nullable="false" />
+          <Property Name="ExamQMode" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="ExamMQBPK" Type="int" />
+          <Property Name="ExamMQBTeamPK" Type="int" />
+          <Property Name="ExamDefaultScore" Type="float" Nullable="false" />
+          <Property Name="SortOrder" Type="int" />
+          <Property Name="ExamQClass" Type="int" />
+        </EntityType>
+        <EntityType Name="ExamMaster">
+          <Key>
+            <PropertyRef Name="ExamID" />
+          </Key>
+          <Property Name="ExamID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExamName" Type="char" MaxLength="20" Nullable="false" />
+          <Property Name="ExamSDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExamEDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExamDuraionTime" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MoodQuestionBank">
+          <Key>
+            <PropertyRef Name="MQBPK" />
+          </Key>
+          <Property Name="MQBPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MQBTeamPK" Type="int" Nullable="false" />
+          <Property Name="MQBSort" Type="int" Nullable="false" />
+          <Property Name="QClass" Type="int" Nullable="false" />
+          <Property Name="QType" Type="int" Nullable="false" />
+          <Property Name="QContent" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="QOptionA" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="QOptionB" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="QOptionC" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="QOptionD" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="QAns" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="QExplain" Type="image" />
+          <Property Name="ImgQContent" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImgQOptionA" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImgQOptionB" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImgQOptionC" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImgQOptionD" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImgQAns" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImgQExplain" Type="nvarchar" MaxLength="50" />
+          <Property Name="MQBChapter" Type="int" />
+          <Property Name="ChapterDetail" Type="int" />
+          <Property Name="MQBSession" Type="int" />
+          <Property Name="Image" Type="image" />
+        </EntityType>
+        <EntityType Name="MQBChapter">
+          <Key>
+            <PropertyRef Name="ChapterPK" />
+          </Key>
+          <Property Name="ChapterPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ChapterContent" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MQBClassName">
+          <Key>
+            <PropertyRef Name="MQBClassPK" />
+          </Key>
+          <Property Name="MQBClassPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MQBClassName" Type="nchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MQBSession">
+          <Key>
+            <PropertyRef Name="MQBSessionPK" />
+          </Key>
+          <Property Name="MQBSessionPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MQBSession" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MQBTeam">
+          <Key>
+            <PropertyRef Name="MQBTeamPK" />
+          </Key>
+          <Property Name="MQBTeamPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MQBTeamYN" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="MQBTeamContent" Type="nchar" MaxLength="100" Nullable="false" />
+          <Property Name="ImgMQBTeamContent" Type="nvarchar" MaxLength="50" />
+          <Property Name="QClass" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Std">
+          <Key>
+            <PropertyRef Name="StdPK" />
+          </Key>
+          <Property Name="StdPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StdDepID" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="StdID" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="StdName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="WorkEmail" Type="nvarchar" MaxLength="50" />
+          <Property Name="PersonalGmail" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="StdGender" Type="char" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="StdExamRec">
+          <Key>
+            <PropertyRef Name="StdExamRecPK" />
+          </Key>
+          <Property Name="StdExamRecPK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExamID" Type="int" />
+          <Property Name="ExamDetPK" Type="int" />
+          <Property Name="ExamMQBPK" Type="int" />
+          <Property Name="ExamDefaultScore" Type="float" />
+          <Property Name="ExamAns" Type="nvarchar" MaxLength="200" />
+          <Property Name="ExamStdPK" Type="int" />
+          <Property Name="ExamStdAns" Type="nvarchar" MaxLength="200" />
+          <Property Name="ExamAnsST" Type="smalldatetime" />
+          <Property Name="ExamAnsET" Type="smalldatetime" />
+          <Property Name="ExamStdAnsRight" Type="nvarchar" MaxLength="200" />
+          <Property Name="ExamEmotion" Type="varchar(max)" />
+          <Property Name="ScoreList" Type="varchar(max)" />
+          <Property Name="PKList" Type="varchar(max)" />
+          <Property Name="ExamRecStdID" Type="nchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_ExamDetail_ExamMaster1">
+          <End Role="ExamMaster" Type="Self.ExamMaster" Multiplicity="1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamMaster">
+              <PropertyRef Name="ExamID" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExamDetail_MoodQuestionBank">
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="0..1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MoodQuestionBank">
+              <PropertyRef Name="MQBPK" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamMQBPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExamDetail_MQBClassName">
+          <End Role="MQBClassName" Type="Self.MQBClassName" Multiplicity="0..1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBClassName">
+              <PropertyRef Name="MQBClassPK" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamQClass" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExamDetail_MQBTeam">
+          <End Role="MQBTeam" Type="Self.MQBTeam" Multiplicity="0..1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBTeam">
+              <PropertyRef Name="MQBTeamPK" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamMQBTeamPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MoodQuestionBank_ChapterDetail">
+          <End Role="ChapterDetail" Type="Self.ChapterDetail" Multiplicity="0..1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChapterDetail">
+              <PropertyRef Name="ChapterDetailPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="ChapterDetail" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MoodQuestionBank_MQBChapter">
+          <End Role="MQBChapter" Type="Self.MQBChapter" Multiplicity="0..1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBChapter">
+              <PropertyRef Name="ChapterPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="MQBChapter" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MoodQuestionBank_MQBClassName">
+          <End Role="MQBClassName" Type="Self.MQBClassName" Multiplicity="1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBClassName">
+              <PropertyRef Name="MQBClassPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="QClass" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MoodQuestionBank_MQBTeam">
+          <End Role="MQBTeam" Type="Self.MQBTeam" Multiplicity="1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBTeam">
+              <PropertyRef Name="MQBTeamPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="MQBTeamPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MQBTeam_MQBClassName">
+          <End Role="MQBClassName" Type="Self.MQBClassName" Multiplicity="1" />
+          <End Role="MQBTeam" Type="Self.MQBTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBClassName">
+              <PropertyRef Name="MQBClassPK" />
+            </Principal>
+            <Dependent Role="MQBTeam">
+              <PropertyRef Name="QClass" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StdExamRec_ExamMaster">
+          <End Role="ExamMaster" Type="Self.ExamMaster" Multiplicity="0..1" />
+          <End Role="StdExamRec" Type="Self.StdExamRec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamMaster">
+              <PropertyRef Name="ExamID" />
+            </Principal>
+            <Dependent Role="StdExamRec">
+              <PropertyRef Name="ExamID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StdExamRec_Std">
+          <End Role="Std" Type="Self.Std" Multiplicity="0..1" />
+          <End Role="StdExamRec" Type="Self.StdExamRec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Std">
+              <PropertyRef Name="StdPK" />
+            </Principal>
+            <Dependent Role="StdExamRec">
+              <PropertyRef Name="ExamStdPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MQBModelStoreContainer">
+          <EntitySet Name="ChapterDetail" EntityType="Self.ChapterDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExamDetail" EntityType="Self.ExamDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExamMaster" EntityType="Self.ExamMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MoodQuestionBank" EntityType="Self.MoodQuestionBank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MQBChapter" EntityType="Self.MQBChapter" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MQBClassName" EntityType="Self.MQBClassName" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MQBSession" EntityType="Self.MQBSession" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MQBTeam" EntityType="Self.MQBTeam" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Std" EntityType="Self.Std" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StdExamRec" EntityType="Self.StdExamRec" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ExamDetail_ExamMaster1" Association="Self.FK_ExamDetail_ExamMaster1">
+            <End Role="ExamMaster" EntitySet="ExamMaster" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExamDetail_MoodQuestionBank" Association="Self.FK_ExamDetail_MoodQuestionBank">
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExamDetail_MQBClassName" Association="Self.FK_ExamDetail_MQBClassName">
+            <End Role="MQBClassName" EntitySet="MQBClassName" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExamDetail_MQBTeam" Association="Self.FK_ExamDetail_MQBTeam">
+            <End Role="MQBTeam" EntitySet="MQBTeam" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MoodQuestionBank_ChapterDetail" Association="Self.FK_MoodQuestionBank_ChapterDetail">
+            <End Role="ChapterDetail" EntitySet="ChapterDetail" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MoodQuestionBank_MQBChapter" Association="Self.FK_MoodQuestionBank_MQBChapter">
+            <End Role="MQBChapter" EntitySet="MQBChapter" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MoodQuestionBank_MQBClassName" Association="Self.FK_MoodQuestionBank_MQBClassName">
+            <End Role="MQBClassName" EntitySet="MQBClassName" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MoodQuestionBank_MQBTeam" Association="Self.FK_MoodQuestionBank_MQBTeam">
+            <End Role="MQBTeam" EntitySet="MQBTeam" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MQBTeam_MQBClassName" Association="Self.FK_MQBTeam_MQBClassName">
+            <End Role="MQBClassName" EntitySet="MQBClassName" />
+            <End Role="MQBTeam" EntitySet="MQBTeam" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StdExamRec_ExamMaster" Association="Self.FK_StdExamRec_ExamMaster">
+            <End Role="ExamMaster" EntitySet="ExamMaster" />
+            <End Role="StdExamRec" EntitySet="StdExamRec" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StdExamRec_Std" Association="Self.FK_StdExamRec_Std">
+            <End Role="Std" EntitySet="Std" />
+            <End Role="StdExamRec" EntitySet="StdExamRec" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MQBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ChapterDetail">
+          <Key>
+            <PropertyRef Name="ChapterDetailPK" />
+          </Key>
+          <Property Name="ChapterDetailPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChapterDetailContent" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="MoodQuestionBank" Relationship="Self.FK_MoodQuestionBank_ChapterDetail" FromRole="ChapterDetail" ToRole="MoodQuestionBank" />
+        </EntityType>
+        <EntityType Name="ExamDetail">
+          <Key>
+            <PropertyRef Name="ExamDetPK" />
+          </Key>
+          <Property Name="ExamDetPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExamID" Type="Int32" Nullable="false" />
+          <Property Name="ExamQMode" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="ExamMQBPK" Type="Int32" />
+          <Property Name="ExamMQBTeamPK" Type="Int32" />
+          <Property Name="ExamDefaultScore" Type="Double" Nullable="false" />
+          <Property Name="SortOrder" Type="Int32" />
+          <Property Name="ExamQClass" Type="Int32" />
+          <NavigationProperty Name="ExamMaster" Relationship="Self.FK_ExamDetail_ExamMaster1" FromRole="ExamDetail" ToRole="ExamMaster" />
+          <NavigationProperty Name="MoodQuestionBank" Relationship="Self.FK_ExamDetail_MoodQuestionBank" FromRole="ExamDetail" ToRole="MoodQuestionBank" />
+          <NavigationProperty Name="MQBClassName" Relationship="Self.FK_ExamDetail_MQBClassName" FromRole="ExamDetail" ToRole="MQBClassName" />
+          <NavigationProperty Name="MQBTeam" Relationship="Self.FK_ExamDetail_MQBTeam" FromRole="ExamDetail" ToRole="MQBTeam" />
+        </EntityType>
+        <EntityType Name="ExamMaster">
+          <Key>
+            <PropertyRef Name="ExamID" />
+          </Key>
+          <Property Name="ExamID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExamName" Type="String" MaxLength="20" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="ExamSDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExamEDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExamDuraionTime" Type="Double" Nullable="false" />
+          <NavigationProperty Name="ExamDetail" Relationship="Self.FK_ExamDetail_ExamMaster1" FromRole="ExamMaster" ToRole="ExamDetail" />
+          <NavigationProperty Name="StdExamRec" Relationship="Self.FK_StdExamRec_ExamMaster" FromRole="ExamMaster" ToRole="StdExamRec" />
+        </EntityType>
+        <EntityType Name="MoodQuestionBank">
+          <Key>
+            <PropertyRef Name="MQBPK" />
+          </Key>
+          <Property Name="MQBPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MQBTeamPK" Type="Int32" Nullable="false" />
+          <Property Name="MQBSort" Type="Int32" Nullable="false" />
+          <Property Name="QClass" Type="Int32" Nullable="false" />
+          <Property Name="QType" Type="Int32" Nullable="false" />
+          <Property Name="QContent" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QOptionA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QOptionB" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QOptionC" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QOptionD" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QAns" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QExplain" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ImgQContent" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImgQOptionA" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImgQOptionB" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImgQOptionC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImgQOptionD" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImgQAns" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImgQExplain" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MQBChapter" Type="Int32" />
+          <Property Name="ChapterDetail" Type="Int32" />
+          <Property Name="MQBSession" Type="Int32" />
+          <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="ChapterDetail1" Relationship="Self.FK_MoodQuestionBank_ChapterDetail" FromRole="MoodQuestionBank" ToRole="ChapterDetail" />
+          <NavigationProperty Name="ExamDetail" Relationship="Self.FK_ExamDetail_MoodQuestionBank" FromRole="MoodQuestionBank" ToRole="ExamDetail" />
+          <NavigationProperty Name="MQBChapter1" Relationship="Self.FK_MoodQuestionBank_MQBChapter" FromRole="MoodQuestionBank" ToRole="MQBChapter" />
+          <NavigationProperty Name="MQBClassName" Relationship="Self.FK_MoodQuestionBank_MQBClassName" FromRole="MoodQuestionBank" ToRole="MQBClassName" />
+          <NavigationProperty Name="MQBTeam" Relationship="Self.FK_MoodQuestionBank_MQBTeam" FromRole="MoodQuestionBank" ToRole="MQBTeam" />
+        </EntityType>
+        <EntityType Name="MQBChapter">
+          <Key>
+            <PropertyRef Name="ChapterPK" />
+          </Key>
+          <Property Name="ChapterPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChapterContent" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="MoodQuestionBank" Relationship="Self.FK_MoodQuestionBank_MQBChapter" FromRole="MQBChapter" ToRole="MoodQuestionBank" />
+        </EntityType>
+        <EntityType Name="MQBClassName">
+          <Key>
+            <PropertyRef Name="MQBClassPK" />
+          </Key>
+          <Property Name="MQBClassPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MQBClassName1" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ExamDetail" Relationship="Self.FK_ExamDetail_MQBClassName" FromRole="MQBClassName" ToRole="ExamDetail" />
+          <NavigationProperty Name="MoodQuestionBank" Relationship="Self.FK_MoodQuestionBank_MQBClassName" FromRole="MQBClassName" ToRole="MoodQuestionBank" />
+          <NavigationProperty Name="MQBTeam" Relationship="Self.FK_MQBTeam_MQBClassName" FromRole="MQBClassName" ToRole="MQBTeam" />
+        </EntityType>
+        <EntityType Name="MQBSession">
+          <Key>
+            <PropertyRef Name="MQBSessionPK" />
+          </Key>
+          <Property Name="MQBSessionPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MQBSession1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MQBTeam">
+          <Key>
+            <PropertyRef Name="MQBTeamPK" />
+          </Key>
+          <Property Name="MQBTeamPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MQBTeamYN" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="MQBTeamContent" Type="String" MaxLength="100" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="ImgMQBTeamContent" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="QClass" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ExamDetail" Relationship="Self.FK_ExamDetail_MQBTeam" FromRole="MQBTeam" ToRole="ExamDetail" />
+          <NavigationProperty Name="MoodQuestionBank" Relationship="Self.FK_MoodQuestionBank_MQBTeam" FromRole="MQBTeam" ToRole="MoodQuestionBank" />
+          <NavigationProperty Name="MQBClassName" Relationship="Self.FK_MQBTeam_MQBClassName" FromRole="MQBTeam" ToRole="MQBClassName" />
+        </EntityType>
+        <EntityType Name="Std">
+          <Key>
+            <PropertyRef Name="StdPK" />
+          </Key>
+          <Property Name="StdPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StdDepID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="StdID" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StdName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WorkEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PersonalGmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StdGender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="StdExamRec" Relationship="Self.FK_StdExamRec_Std" FromRole="Std" ToRole="StdExamRec" />
+        </EntityType>
+        <EntityType Name="StdExamRec">
+          <Key>
+            <PropertyRef Name="StdExamRecPK" />
+          </Key>
+          <Property Name="StdExamRecPK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExamID" Type="Int32" />
+          <Property Name="ExamDetPK" Type="Int32" />
+          <Property Name="ExamMQBPK" Type="Int32" />
+          <Property Name="ExamDefaultScore" Type="Double" />
+          <Property Name="ExamAns" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ExamStdPK" Type="Int32" />
+          <Property Name="ExamStdAns" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ExamAnsST" Type="DateTime" Precision="0" />
+          <Property Name="ExamAnsET" Type="DateTime" Precision="0" />
+          <Property Name="ExamStdAnsRight" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ExamEmotion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ScoreList" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PKList" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ExamRecStdID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="ExamMaster" Relationship="Self.FK_StdExamRec_ExamMaster" FromRole="StdExamRec" ToRole="ExamMaster" />
+          <NavigationProperty Name="Std" Relationship="Self.FK_StdExamRec_Std" FromRole="StdExamRec" ToRole="Std" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK_MoodQuestionBank_ChapterDetail">
+          <End Role="ChapterDetail" Type="Self.ChapterDetail" Multiplicity="0..1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChapterDetail">
+              <PropertyRef Name="ChapterDetailPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="ChapterDetail" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExamDetail_ExamMaster1">
+          <End Role="ExamMaster" Type="Self.ExamMaster" Multiplicity="1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamMaster">
+              <PropertyRef Name="ExamID" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExamDetail_MoodQuestionBank">
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="0..1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MoodQuestionBank">
+              <PropertyRef Name="MQBPK" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamMQBPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExamDetail_MQBClassName">
+          <End Role="MQBClassName" Type="Self.MQBClassName" Multiplicity="0..1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBClassName">
+              <PropertyRef Name="MQBClassPK" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamQClass" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExamDetail_MQBTeam">
+          <End Role="MQBTeam" Type="Self.MQBTeam" Multiplicity="0..1" />
+          <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBTeam">
+              <PropertyRef Name="MQBTeamPK" />
+            </Principal>
+            <Dependent Role="ExamDetail">
+              <PropertyRef Name="ExamMQBTeamPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StdExamRec_ExamMaster">
+          <End Role="ExamMaster" Type="Self.ExamMaster" Multiplicity="0..1" />
+          <End Role="StdExamRec" Type="Self.StdExamRec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExamMaster">
+              <PropertyRef Name="ExamID" />
+            </Principal>
+            <Dependent Role="StdExamRec">
+              <PropertyRef Name="ExamID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MoodQuestionBank_MQBChapter">
+          <End Role="MQBChapter" Type="Self.MQBChapter" Multiplicity="0..1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBChapter">
+              <PropertyRef Name="ChapterPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="MQBChapter" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MoodQuestionBank_MQBClassName">
+          <End Role="MQBClassName" Type="Self.MQBClassName" Multiplicity="1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBClassName">
+              <PropertyRef Name="MQBClassPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="QClass" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MoodQuestionBank_MQBTeam">
+          <End Role="MQBTeam" Type="Self.MQBTeam" Multiplicity="1" />
+          <End Role="MoodQuestionBank" Type="Self.MoodQuestionBank" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBTeam">
+              <PropertyRef Name="MQBTeamPK" />
+            </Principal>
+            <Dependent Role="MoodQuestionBank">
+              <PropertyRef Name="MQBTeamPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MQBTeam_MQBClassName">
+          <End Role="MQBClassName" Type="Self.MQBClassName" Multiplicity="1" />
+          <End Role="MQBTeam" Type="Self.MQBTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MQBClassName">
+              <PropertyRef Name="MQBClassPK" />
+            </Principal>
+            <Dependent Role="MQBTeam">
+              <PropertyRef Name="QClass" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StdExamRec_Std">
+          <End Role="Std" Type="Self.Std" Multiplicity="0..1" />
+          <End Role="StdExamRec" Type="Self.StdExamRec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Std">
+              <PropertyRef Name="StdPK" />
+            </Principal>
+            <Dependent Role="StdExamRec">
+              <PropertyRef Name="ExamStdPK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MQBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ChapterDetail" EntityType="Self.ChapterDetail" />
+          <EntitySet Name="ExamDetail" EntityType="Self.ExamDetail" />
+          <EntitySet Name="ExamMaster" EntityType="Self.ExamMaster" />
+          <EntitySet Name="MoodQuestionBank" EntityType="Self.MoodQuestionBank" />
+          <EntitySet Name="MQBChapter" EntityType="Self.MQBChapter" />
+          <EntitySet Name="MQBClassName" EntityType="Self.MQBClassName" />
+          <EntitySet Name="MQBSession" EntityType="Self.MQBSession" />
+          <EntitySet Name="MQBTeam" EntityType="Self.MQBTeam" />
+          <EntitySet Name="Std" EntityType="Self.Std" />
+          <EntitySet Name="StdExamRec" EntityType="Self.StdExamRec" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <AssociationSet Name="FK_MoodQuestionBank_ChapterDetail" Association="Self.FK_MoodQuestionBank_ChapterDetail">
+            <End Role="ChapterDetail" EntitySet="ChapterDetail" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExamDetail_ExamMaster1" Association="Self.FK_ExamDetail_ExamMaster1">
+            <End Role="ExamMaster" EntitySet="ExamMaster" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExamDetail_MoodQuestionBank" Association="Self.FK_ExamDetail_MoodQuestionBank">
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExamDetail_MQBClassName" Association="Self.FK_ExamDetail_MQBClassName">
+            <End Role="MQBClassName" EntitySet="MQBClassName" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExamDetail_MQBTeam" Association="Self.FK_ExamDetail_MQBTeam">
+            <End Role="MQBTeam" EntitySet="MQBTeam" />
+            <End Role="ExamDetail" EntitySet="ExamDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StdExamRec_ExamMaster" Association="Self.FK_StdExamRec_ExamMaster">
+            <End Role="ExamMaster" EntitySet="ExamMaster" />
+            <End Role="StdExamRec" EntitySet="StdExamRec" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MoodQuestionBank_MQBChapter" Association="Self.FK_MoodQuestionBank_MQBChapter">
+            <End Role="MQBChapter" EntitySet="MQBChapter" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MoodQuestionBank_MQBClassName" Association="Self.FK_MoodQuestionBank_MQBClassName">
+            <End Role="MQBClassName" EntitySet="MQBClassName" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MoodQuestionBank_MQBTeam" Association="Self.FK_MoodQuestionBank_MQBTeam">
+            <End Role="MQBTeam" EntitySet="MQBTeam" />
+            <End Role="MoodQuestionBank" EntitySet="MoodQuestionBank" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MQBTeam_MQBClassName" Association="Self.FK_MQBTeam_MQBClassName">
+            <End Role="MQBClassName" EntitySet="MQBClassName" />
+            <End Role="MQBTeam" EntitySet="MQBTeam" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StdExamRec_Std" Association="Self.FK_StdExamRec_Std">
+            <End Role="Std" EntitySet="Std" />
+            <End Role="StdExamRec" EntitySet="StdExamRec" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MQBModelStoreContainer" CdmEntityContainer="MQBEntities">
+          <EntitySetMapping Name="ChapterDetail">
+            <EntityTypeMapping TypeName="MQBModel.ChapterDetail">
+              <MappingFragment StoreEntitySet="ChapterDetail">
+                <ScalarProperty Name="ChapterDetailPK" ColumnName="ChapterDetailPK" />
+                <ScalarProperty Name="ChapterDetailContent" ColumnName="ChapterDetailContent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExamDetail">
+            <EntityTypeMapping TypeName="MQBModel.ExamDetail">
+              <MappingFragment StoreEntitySet="ExamDetail">
+                <ScalarProperty Name="ExamDetPK" ColumnName="ExamDetPK" />
+                <ScalarProperty Name="ExamID" ColumnName="ExamID" />
+                <ScalarProperty Name="ExamQMode" ColumnName="ExamQMode" />
+                <ScalarProperty Name="ExamMQBPK" ColumnName="ExamMQBPK" />
+                <ScalarProperty Name="ExamMQBTeamPK" ColumnName="ExamMQBTeamPK" />
+                <ScalarProperty Name="ExamDefaultScore" ColumnName="ExamDefaultScore" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="ExamQClass" ColumnName="ExamQClass" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExamMaster">
+            <EntityTypeMapping TypeName="MQBModel.ExamMaster">
+              <MappingFragment StoreEntitySet="ExamMaster">
+                <ScalarProperty Name="ExamID" ColumnName="ExamID" />
+                <ScalarProperty Name="ExamName" ColumnName="ExamName" />
+                <ScalarProperty Name="ExamSDate" ColumnName="ExamSDate" />
+                <ScalarProperty Name="ExamEDate" ColumnName="ExamEDate" />
+                <ScalarProperty Name="ExamDuraionTime" ColumnName="ExamDuraionTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MoodQuestionBank">
+            <EntityTypeMapping TypeName="MQBModel.MoodQuestionBank">
+              <MappingFragment StoreEntitySet="MoodQuestionBank">
+                <ScalarProperty Name="MQBPK" ColumnName="MQBPK" />
+                <ScalarProperty Name="MQBTeamPK" ColumnName="MQBTeamPK" />
+                <ScalarProperty Name="MQBSort" ColumnName="MQBSort" />
+                <ScalarProperty Name="QClass" ColumnName="QClass" />
+                <ScalarProperty Name="QType" ColumnName="QType" />
+                <ScalarProperty Name="QContent" ColumnName="QContent" />
+                <ScalarProperty Name="QOptionA" ColumnName="QOptionA" />
+                <ScalarProperty Name="QOptionB" ColumnName="QOptionB" />
+                <ScalarProperty Name="QOptionC" ColumnName="QOptionC" />
+                <ScalarProperty Name="QOptionD" ColumnName="QOptionD" />
+                <ScalarProperty Name="QAns" ColumnName="QAns" />
+                <ScalarProperty Name="QExplain" ColumnName="QExplain" />
+                <ScalarProperty Name="ImgQContent" ColumnName="ImgQContent" />
+                <ScalarProperty Name="ImgQOptionA" ColumnName="ImgQOptionA" />
+                <ScalarProperty Name="ImgQOptionB" ColumnName="ImgQOptionB" />
+                <ScalarProperty Name="ImgQOptionC" ColumnName="ImgQOptionC" />
+                <ScalarProperty Name="ImgQOptionD" ColumnName="ImgQOptionD" />
+                <ScalarProperty Name="ImgQAns" ColumnName="ImgQAns" />
+                <ScalarProperty Name="ImgQExplain" ColumnName="ImgQExplain" />
+                <ScalarProperty Name="MQBChapter" ColumnName="MQBChapter" />
+                <ScalarProperty Name="ChapterDetail" ColumnName="ChapterDetail" />
+                <ScalarProperty Name="MQBSession" ColumnName="MQBSession" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MQBChapter">
+            <EntityTypeMapping TypeName="MQBModel.MQBChapter">
+              <MappingFragment StoreEntitySet="MQBChapter">
+                <ScalarProperty Name="ChapterPK" ColumnName="ChapterPK" />
+                <ScalarProperty Name="ChapterContent" ColumnName="ChapterContent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MQBClassName">
+            <EntityTypeMapping TypeName="MQBModel.MQBClassName">
+              <MappingFragment StoreEntitySet="MQBClassName">
+                <ScalarProperty Name="MQBClassPK" ColumnName="MQBClassPK" />
+                <ScalarProperty Name="MQBClassName1" ColumnName="MQBClassName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MQBSession">
+            <EntityTypeMapping TypeName="MQBModel.MQBSession">
+              <MappingFragment StoreEntitySet="MQBSession">
+                <ScalarProperty Name="MQBSessionPK" ColumnName="MQBSessionPK" />
+                <ScalarProperty Name="MQBSession1" ColumnName="MQBSession" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MQBTeam">
+            <EntityTypeMapping TypeName="MQBModel.MQBTeam">
+              <MappingFragment StoreEntitySet="MQBTeam">
+                <ScalarProperty Name="MQBTeamPK" ColumnName="MQBTeamPK" />
+                <ScalarProperty Name="MQBTeamYN" ColumnName="MQBTeamYN" />
+                <ScalarProperty Name="MQBTeamContent" ColumnName="MQBTeamContent" />
+                <ScalarProperty Name="ImgMQBTeamContent" ColumnName="ImgMQBTeamContent" />
+                <ScalarProperty Name="QClass" ColumnName="QClass" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Std">
+            <EntityTypeMapping TypeName="MQBModel.Std">
+              <MappingFragment StoreEntitySet="Std">
+                <ScalarProperty Name="StdPK" ColumnName="StdPK" />
+                <ScalarProperty Name="StdDepID" ColumnName="StdDepID" />
+                <ScalarProperty Name="StdID" ColumnName="StdID" />
+                <ScalarProperty Name="StdName" ColumnName="StdName" />
+                <ScalarProperty Name="WorkEmail" ColumnName="WorkEmail" />
+                <ScalarProperty Name="PersonalGmail" ColumnName="PersonalGmail" />
+                <ScalarProperty Name="StdGender" ColumnName="StdGender" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StdExamRec">
+            <EntityTypeMapping TypeName="MQBModel.StdExamRec">
+              <MappingFragment StoreEntitySet="StdExamRec">
+                <ScalarProperty Name="StdExamRecPK" ColumnName="StdExamRecPK" />
+                <ScalarProperty Name="ExamID" ColumnName="ExamID" />
+                <ScalarProperty Name="ExamDetPK" ColumnName="ExamDetPK" />
+                <ScalarProperty Name="ExamMQBPK" ColumnName="ExamMQBPK" />
+                <ScalarProperty Name="ExamDefaultScore" ColumnName="ExamDefaultScore" />
+                <ScalarProperty Name="ExamAns" ColumnName="ExamAns" />
+                <ScalarProperty Name="ExamStdPK" ColumnName="ExamStdPK" />
+                <ScalarProperty Name="ExamStdAns" ColumnName="ExamStdAns" />
+                <ScalarProperty Name="ExamAnsST" ColumnName="ExamAnsST" />
+                <ScalarProperty Name="ExamAnsET" ColumnName="ExamAnsET" />
+                <ScalarProperty Name="ExamStdAnsRight" ColumnName="ExamStdAnsRight" />
+                <ScalarProperty Name="ExamEmotion" ColumnName="ExamEmotion" />
+                <ScalarProperty Name="ScoreList" ColumnName="ScoreList" />
+                <ScalarProperty Name="PKList" ColumnName="PKList" />
+                <ScalarProperty Name="ExamRecStdID" ColumnName="ExamRecStdID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="MQBModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

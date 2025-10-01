@@ -1,0 +1,159 @@
+﻿@model IEnumerable<專題MVC修正.Models.MoodQuestionBank>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MQBSort)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QContent)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QOptionA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QOptionB)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QOptionC)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QOptionD)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QAns)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QExplain)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgQContent)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgQOptionA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgQOptionB)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgQOptionC)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgQOptionD)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgQAns)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgQExplain)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MQBSession)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Image)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ChapterDetail1.ChapterDetailContent)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MQBChapter1.ChapterContent)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MQBClassName.MQBClassName1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MQBTeam.MQBTeamYN)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.MQBSort)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QContent)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QOptionA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QOptionB)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QOptionC)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QOptionD)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QAns)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QExplain)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgQContent)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgQOptionA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgQOptionB)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgQOptionC)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgQOptionD)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgQAns)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgQExplain)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MQBSession)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Image)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ChapterDetail1.ChapterDetailContent)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MQBChapter1.ChapterContent)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MQBClassName.MQBClassName1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MQBTeam.MQBTeamYN)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.MQBPK }) |
+            @Html.ActionLink("Details", "Details", new { id=item.MQBPK }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.MQBPK })
+        </td>
+    </tr>
+}
+
+</table>

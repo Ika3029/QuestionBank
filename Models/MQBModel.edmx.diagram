@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d3910467c0794479b7a40f9ef9d54789" Name="Diagram1">
+        <EntityTypeShape EntityType="MQBModel.ChapterDetail" Width="1.5" PointX="6" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.ExamDetail" Width="1.5" PointX="5.25" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.ExamMaster" Width="1.5" PointX="3" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.MoodQuestionBank" Width="1.5" PointX="8.25" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.MQBChapter" Width="1.5" PointX="6" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.MQBClassName" Width="1.5" PointX="0.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.MQBSession" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.MQBTeam" Width="1.5" PointX="3" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.Std" Width="1.5" PointX="6" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.StdExamRec" Width="1.5" PointX="8.25" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MQBModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="MQBModel.FK_MoodQuestionBank_ChapterDetail" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_ExamDetail_ExamMaster1" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_ExamDetail_MoodQuestionBank" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_ExamDetail_MQBClassName" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_ExamDetail_MQBTeam" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_StdExamRec_ExamMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_MoodQuestionBank_MQBChapter" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_MoodQuestionBank_MQBClassName" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_MoodQuestionBank_MQBTeam" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_MQBTeam_MQBClassName" ManuallyRouted="false" />
+        <AssociationConnector Association="MQBModel.FK_StdExamRec_Std" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
