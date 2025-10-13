@@ -1,0 +1,58 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<專題MVC修正.Models.MoodQuestionBank>
+@{
+    ViewBag.Title = "題庫列表";
+}
+
+<h2>題庫列表</h2>
+
+@using (Html.BeginForm("Questions_Index", "ManageQuestions", FormMethod.Get))
+{
+    <div class="form-inline" style="gap:8px">
+        題組：
+        @Html.DropDownList("MQBTeamPK", (SelectList)ViewBag.MQBTeamPK, "全部", new { @class = "form-control", style = "min-width:200px" })
+        關鍵字：
+        <input type="text" name="searchString" class="form-control" value="@Request["searchString"]" />
+        <button type="submit" class="btn btn-primary">查詢</button>
+        <a class="btn btn-success" href="@Url.Action("Questions_Create")">新增題目</a>
+    </div>
+}
+
+@if (TempData["ok"] != null)
+{
+    <div class="alert alert-success" style="margin-top:12px">@TempData["ok"]</div>
+}
+
+<table class="table table-bordered table-striped" style="margin-top:12px">
+    <thead>
+        <tr>
+            <th style="width:80px;">題庫PK</th>
+            <th>題目內容</th>
+            <th style="width:120px;">題型</th>
+            <th style="width:120px;">題組PK</th>
+            <th style="width:200px;">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>@x.MQBPK</td>
+                <td>@x.QContent</td>
+                <td>@x.QType</td>
+                <td>@x.MQBTeamPK</td>
+                <td>
+                    <a class="btn btn-sm btn-warning" href="@Url.Action("Questions_Edit", new { id = x.MQBPK })">編輯</a>
+                    @using (Html.BeginForm("Questions_Delete", "ManageQuestions", FormMethod.Post, new { style = "display:inline" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", x.MQBPK)
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('確定刪除？')">刪除</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.PagedListPager(Model, p => Url.Action("Questions_Index", new { page = p, MQBTeamPK = Request["MQBTeamPK"], searchString = Request["searchString"] }))

@@ -1,0 +1,118 @@
+﻿@model 專題MVC修正.Models.MoodQuestionBank
+@{
+    ViewBag.Title = "編輯題目";
+}
+
+<h2>編輯題目</h2>
+
+@using (Html.BeginForm("Questions_Edit", "ManageQuestions", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(m => m.MQBPK)
+
+    <!-- 題組 -->
+    <div class="form-group">
+        <label>題組：</label>
+        <div class="input-group">
+            @Html.DropDownListFor(
+                m => m.MQBTeamPK,
+                (SelectList)ViewBag.MQBTeamPK,
+                "請選擇",
+                new { @class = "form-control", id = "MQBTeamPK" }
+            )
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="btnAddTeam">+ 新增題組</button>
+            </span>
+        </div>
+        @Html.ValidationMessageFor(m => m.MQBTeamPK, "", new { @class = "text-danger" })
+    </div>
+
+    <!-- 分類 -->
+    <div class="form-group">
+        <label>類別（QClass）：</label>
+        <div class="input-group">
+            @Html.DropDownListFor(
+                m => m.QClass,
+                (SelectList)ViewBag.QClass,
+                "請選擇",
+                new { @class = "form-control", id = "QClass" }
+            )
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="btnAddClass">+ 新增分類</button>
+            </span>
+        </div>
+        @Html.ValidationMessageFor(m => m.QClass, "", new { @class = "text-danger" })
+    </div>
+
+    <!-- 題型 -->
+    <div class="form-group">
+        <label>題型(QType)：</label>
+        @Html.TextBoxFor(m => m.QType, new { @class = "form-control", placeholder = "1=單選 / 2=多選 / 3=填充 / 4=問答" })
+    </div>
+
+    <!-- 題目內容 -->
+    <div class="form-group">
+        <label>題目內容：</label>
+        @Html.TextAreaFor(m => m.QContent, 5, 80, new { @class = "form-control", required = "required" })
+    </div>
+
+    <!-- 選項 -->
+    <div class="form-group">選項A：@Html.TextBoxFor(m => m.QOptionA, new { @class = "form-control" })</div>
+    <div class="form-group">選項B：@Html.TextBoxFor(m => m.QOptionB, new { @class = "form-control" })</div>
+    <div class="form-group">選項C：@Html.TextBoxFor(m => m.QOptionC, new { @class = "form-control" })</div>
+    <div class="form-group">選項D：@Html.TextBoxFor(m => m.QOptionD, new { @class = "form-control" })</div>
+
+    <!-- 標準答案 -->
+    <div class="form-group">
+        <label>標準答案(QAns)：</label>
+        @Html.TextBoxFor(m => m.QAns, new { @class = "form-control", placeholder = "例如：1 或 13（多選）" })
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">儲存變更</button>
+        <a href="@Url.Action("Questions_Index")" class="btn btn-default">返回列表</a>
+    </div>
+}
+
+@section scripts{
+    <script>
+    // 題組：用 prompt() 新增
+    $("#btnAddTeam").on("click", function () {
+        var name = prompt("請輸入新的題組名稱：");
+        if (!name) return;
+
+        $.post("@Url.Action("AddTeam","ManageQuestions")", { name: name })
+            .done(function (res) {
+                if (res.ok) {
+                    $("#MQBTeamPK").append(
+                        $("<option>", { value: res.id, text: res.text, selected: true })
+                    );
+                    alert("已新增題組：" + res.text);
+                } else {
+                    alert(res.err || "新增失敗");
+                }
+            })
+            .fail(function () { alert("連線失敗，請稍後再試。"); });
+    });
+
+    // 分類：用 prompt() 新增
+    $("#btnAddClass").on("click", function () {
+        var name = prompt("請輸入新的分類名稱：");
+        if (!name) return;
+
+        $.post("@Url.Action("AddClass","ManageQuestions")", { name: name })
+            .done(function (res) {
+                if (res.ok) {
+                    $("#QClass").append(
+                        $("<option>", { value: res.id, text: res.text, selected: true })
+                    );
+                    alert("已新增分類：" + res.text);
+                } else {
+                    alert(res.err || "新增失敗");
+                }
+            })
+            .fail(function () { alert("連線失敗，請稍後再試。"); });
+    });
+    </script>
+}
