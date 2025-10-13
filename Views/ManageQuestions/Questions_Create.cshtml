@@ -1,0 +1,75 @@
+﻿@model 專題MVC修正.Models.MoodQuestionBank
+@{
+    ViewBag.Title = "新增題目";
+}
+<h2>新增題目</h2>
+
+@using (Html.BeginForm("Questions_Create", "ManageQuestions", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        題組：
+        @Html.DropDownListFor(m => m.MQBTeamPK, (SelectList)ViewBag.MQBTeamPK, "請選擇", new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        類別（QClass）：
+        @Html.DropDownListFor(m => m.QClass,
+            (SelectList)ViewBag.QClass,
+            "請選擇",
+            new { @class = "form-control", required = "required" })
+        @Html.ValidationMessageFor(m => m.QClass, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        題型(QType)：
+        @Html.TextBoxFor(m => m.QType, new { @class = "form-control", placeholder = "1=單選/2=多選/3=填充/4=問答" })
+    </div>
+    <div class="form-group">
+        題目內容：
+        @Html.TextAreaFor(m => m.QContent, 5, 80, new { @class = "form-control" })
+    </div>
+    <div class="form-group">選項A：@Html.TextBoxFor(m => m.QOptionA, new { @class = "form-control" })</div>
+    <div class="form-group">選項B：@Html.TextBoxFor(m => m.QOptionB, new { @class = "form-control" })</div>
+    <div class="form-group">選項C：@Html.TextBoxFor(m => m.QOptionC, new { @class = "form-control" })</div>
+    <div class="form-group">選項D：@Html.TextBoxFor(m => m.QOptionD, new { @class = "form-control" })</div>
+    <div class="form-group">標準答案(QAns)：@Html.TextBoxFor(m => m.QAns, new { @class = "form-control" })</div>
+
+    <button type="submit" class="btn btn-primary">儲存</button>
+    <a class="btn btn-default" href="@Url.Action("Questions_Index")">返回</a>
+}
+
+
+
+@section Scripts {
+    <script>
+    $(function () {
+        $("#btnAddClass").click(function () {
+            var newName = prompt("請輸入新分類名稱：");
+            if (!newName) return;
+
+            $.ajax({
+                url: '@Url.Action("AddClass", "ManageQuestions")',
+                type: 'POST',
+                data: { className: newName },
+                success: function (res) {
+                    if (res.success) {
+                        alert("已新增分類：" + res.name);
+                        // 新增進下拉選單
+                        $("#QClassDropdown").append(
+                            $("<option>", { value: res.id, text: res.name, selected: true })
+                        );
+                    } else {
+                        alert(res.message);
+                    }
+                },
+                error: function () {
+                    alert("新增分類時發生錯誤，請稍後再試。");
+                }
+            });
+        });
+    });
+    </script>
+}
+

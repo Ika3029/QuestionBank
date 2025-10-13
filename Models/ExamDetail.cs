@@ -19,7 +19,7 @@ namespace 專題MVC修正.Models
         public string ExamQMode { get; set; }
         public Nullable<int> ExamMQBPK { get; set; }
         public Nullable<int> ExamMQBTeamPK { get; set; }
-        public double ExamDefaultScore { get; set; }
+        public Nullable<double> ExamDefaultScore { get; set; }
         public Nullable<int> SortOrder { get; set; }
         public Nullable<int> ExamQClass { get; set; }
     
