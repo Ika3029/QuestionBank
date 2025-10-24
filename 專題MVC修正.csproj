@@ -143,6 +143,7 @@
       <DependentUpon>MQBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DTOs\Paging.cs" />
+    <Compile Include="Models\DTOs\Std.cs" />
     <Compile Include="Models\ExamDetail.cs">
       <DependentUpon>MQBModel.tt</DependentUpon>
     </Compile>
@@ -271,6 +272,7 @@
     <Folder Include="Controllers\User\" />
     <Folder Include="Views\ManageExams\" />
     <Folder Include="Views\ManageLookups\" />
+    <Folder Include="Views\Std\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
