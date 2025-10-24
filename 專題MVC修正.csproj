@@ -136,6 +136,7 @@
     <Compile Include="Controllers\Manage\ManageExamsController.cs" />
     <Compile Include="Controllers\Manage\ManageLookupsController.cs" />
     <Compile Include="Controllers\Manage\ManageQuestionsController.cs" />
+    <Compile Include="Controllers\User\UsersStdController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -266,9 +267,13 @@
     <Content Include="Views\ManageQuestions\Questions_Index.cshtml" />
     <Content Include="Views\ManageQuestions\Questions_Create.cshtml" />
     <Content Include="Views\ManageQuestions\Questions_Edit.cshtml" />
+    <Content Include="Views\UsersStd\Std_Index.cshtml" />
+    <Content Include="Views\UsersStd\Std_Details.cshtml" />
+    <Content Include="Views\UsersStd\Std_Create.cshtml" />
+    <Content Include="Views\UsersStd\Std_Edit.cshtml" />
+    <Content Include="Views\UsersStd\Std_Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\User\" />
     <Folder Include="Views\ManageExams\" />
     <Folder Include="Views\ManageLookups\" />
   </ItemGroup>

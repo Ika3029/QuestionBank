@@ -1,0 +1,22 @@
+﻿@model 專題MVC修正.Models.Std
+@{
+    ViewBag.Title = "學生詳細資料";
+}
+<h2>學生詳細資料</h2>
+<hr />
+
+<dl class="dl-horizontal">
+    <dt>學號</dt>
+    <dd>@Model.StdID</dd>
+
+    <dt>姓名</dt>
+    <dd>@Model.StdName</dd>
+
+    <dt>科系/年級/班級</dt>
+    <dd>@Model.StdDepID</dd>
+
+    <dt>學校 Email</dt>
+    <dd>@Model.WorkEmail</dd>
+
+    <dt>個人 Email</dt>
+    <dd>@Model.PersonalGmail</dd>

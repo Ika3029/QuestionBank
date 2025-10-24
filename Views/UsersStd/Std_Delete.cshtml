@@ -1,0 +1,25 @@
+﻿@model 專題MVC修正.Models.Std
+@{
+    ViewBag.Title = "刪除學生";
+}
+<h2>刪除學生</h2>
+<p>確定要刪除此學生嗎？</p>
+
+<dl class="row">
+    <dt class="col-sm-3">PK</dt>
+    <dd class="col-sm-9">@Model.StdPK</dd>
+    <dt class="col-sm-3">學號</dt>
+    <dd class="col-sm-9">@Model.StdID</dd>
+    <dt class="col-sm-3">姓名</dt>
+    <dd class="col-sm-9">@Model.StdName</dd>
+    <dt class="col-sm-3">性別</dt>
+    <dd class="col-sm-9">@Model.StdGender</dd>
+</dl>
+
+@using (Html.BeginForm("Std_Delete", "UsersStd", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.StdPK)
+    <button type="submit" class="btn btn-danger">確定刪除</button>
+    @Html.ActionLink("取消", "Std_Index", "UsersStd", null, new { @class = "btn btn-secondary ms-2" })
+}

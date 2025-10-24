@@ -1,0 +1,78 @@
+﻿@model 專題MVC修正.Models.Std
+@{
+    ViewBag.Title = "新增學生";
+}
+
+<h2>新增學生</h2>
+
+@using (Html.BeginForm("Std_Create", "UsersStd", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <label>科系 / 年級 / 班級</label>
+        <div class="d-flex gap-2">
+            @Html.DropDownList("StdDep", (SelectList)ViewBag.StdDep, "--選擇科系--", new { @class = "form-control", id = "StdDep" })
+            @Html.DropDownList("StaffGrade", (SelectList)ViewBag.StaffGrade, "--年級--", new { @class = "form-control", id = "StaffGrade" })
+            @Html.DropDownList("StaffClass", (SelectList)ViewBag.StaffClass, "--班級--", new { @class = "form-control", id = "StaffClass" })
+            <button type="button" id="btnAddDep" class="btn btn-outline-success">＋新增科系</button>
+        </div>
+        <small class="text-muted">儲存時會組成：科系 + 空白 + 年級 + 班級（例如：國貿系 1A）</small>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.StdID)
+        @Html.TextBoxFor(m => m.StdID, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.StdID, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.StdName)
+        @Html.TextBoxFor(m => m.StdName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.StdName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.WorkEmail, "學校 Email")
+        @Html.TextBoxFor(m => m.WorkEmail, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.WorkEmail, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.PersonalGmail, "個人 Email")
+        @Html.TextBoxFor(m => m.PersonalGmail, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.PersonalGmail, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>性別</label>
+        @Html.DropDownList("StdGender", (SelectList)ViewBag.StdGender, "--選擇性別--", new { @class = "form-control", id = "StdGender" })
+        @Html.ValidationMessageFor(m => m.StdGender, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">確定新增</button>
+    @Html.ActionLink("返回清單", "Std_Index", "UsersStd", null, new { @class = "btn btn-link" })
+}
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+// 新增科系：呼叫 /UsersStd/AddDepartment，成功後把新項目加入並選取
+$("#btnAddDep").on("click", function () {
+    var name = prompt("輸入新的科系代碼（最多10字）：");
+    if (!name) return;
+
+    $.post("@Url.Action("AddDepartment","UsersStd")", { name: name })
+     .done(function (res) {
+        if (!res || res.ok === false) { alert(res && res.msg ? res.msg : "新增失敗"); return; }
+        var $d = $("#StdDep");
+        if ($d.find("option[value='"+res.id+"']").length === 0) {
+            $d.append($("<option/>").val(res.id).text(res.name));
+        }
+        $d.val(res.id).change();
+     })
+     .fail(function () { alert("連線失敗，請稍後再試"); });
+});
+    </script>
+}

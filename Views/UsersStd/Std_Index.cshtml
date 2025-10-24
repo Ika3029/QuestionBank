@@ -1,0 +1,67 @@
+﻿@model IEnumerable<專題MVC修正.Models.Std>
+@{
+    ViewBag.Title = "學生資料清單";
+}
+
+<h2>學生資料清單</h2>
+
+@using (Html.BeginForm("Std_Index", "UsersStd", FormMethod.Get))
+{
+    <div class="row mb-3">
+        <div class="col-md-2">
+            @Html.DropDownList("StdDep", (SelectList)ViewBag.StdDep, "--科系--", new { @class = "form-select" })
+        </div>
+        <div class="col-md-2">
+            @Html.DropDownList("Grade", (SelectList)ViewBag.StaffGrade, "--年級--", new { @class = "form-select" })
+        </div>
+        <div class="col-md-2">
+            @Html.DropDownList("Class", (SelectList)ViewBag.StaffClass, "--班級--", new { @class = "form-select" })
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="q" value="@ViewBag.Query" class="form-control" placeholder="輸入學號或姓名搜尋" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary me-2">搜尋</button>
+            @Html.ActionLink("新增學生", "Std_Create", "UsersStd", null, new { @class = "btn btn-success" })
+        </div>
+    </div>
+}
+
+<table class="table table-bordered table-striped table-hover align-middle">
+    <thead class="table-dark text-center">
+        <tr>
+            <th style="width: 10%">學號</th>
+            <th style="width: 15%">姓名</th>
+            <th style="width: 20%">科系/年級/班級</th>
+            <th style="width: 20%">學校Email</th>
+            <th style="width: 15%">個人Email</th>
+            <th style="width: 5%">性別</th>
+            <th style="width: 15%">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.StdID</td>
+                    <td>@item.StdName</td>
+                    <td>@item.StdDepID</td>
+                    <td>@item.WorkEmail</td>
+                    <td>@item.PersonalGmail</td>
+                    <td>@(item.StdGender == "1" ? "女" : item.StdGender == "0" ? "男" : "")</td>
+                    <td class="text-center">
+                        @Html.ActionLink("詳細", "Std_Details", "UsersStd", new { id = item.StdPK }, new { @class = "btn btn-sm btn-info me-1" })
+                        @Html.ActionLink("編輯", "Std_Edit", "UsersStd", new { id = item.StdPK }, new { @class = "btn btn-sm btn-warning me-1" })
+                        @Html.ActionLink("刪除", "Std_Delete", "UsersStd", new { id = item.StdPK }, new { @class = "btn btn-sm btn-danger", onclick = "return confirm('確定要刪除此筆學生資料嗎？');" })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="7" class="text-center text-muted">目前沒有資料</td></tr>
+        }
+    </tbody>
+</table>
