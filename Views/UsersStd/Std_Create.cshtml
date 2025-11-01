@@ -22,13 +22,13 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.StdID)
+        @Html.LabelFor(m => m.StdID,"學號")
         @Html.TextBoxFor(m => m.StdID, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.StdID, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.StdName)
+        @Html.LabelFor(m => m.StdName,"姓名")
         @Html.TextBoxFor(m => m.StdName, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.StdName, "", new { @class = "text-danger" })
     </div>
