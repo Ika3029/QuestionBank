@@ -1,159 +1,51 @@
-﻿@model IEnumerable<專題MVC修正.Models.MoodQuestionBank>
-
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    ViewBag.Title = "首頁";
 }
+<div class="row g-4">
+    <!-- 左：Hero + 功能卡 -->
+    <div class="col-lg-8">
+        <section class="hero card-clean p-4 p-lg-5">
+            <h1 class="display-6 fw-extrabold lh-sm mb-3">
+                為學生量身打造的練習題庫
+            </h1>
+            <p class="text-secondary mb-4">
+                模擬考模式、單題練習、錯題本與個人化弱點分析，讓你在國考與課業準備上更有方向。
+            </p>
+            <div class="d-flex flex-wrap gap-3">
+                <a href="@Url.Action("Practice","Home")" class="btn btn-primary btn-lg px-4">立即開始練習</a>
+                <a href="@Url.Action("Analytics","Home")" class="btn btn-outline-secondary btn-lg px-4">查看成績分析</a>
+            </div>
+        </section>
 
-<h2>Index</h2>
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <div class="card-clean h-100 p-4">
+                    <h5 class="fw-bold mb-1">模擬考</h5>
+                    <p class="text-secondary mb-0">限時模擬真實考場。</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card-clean h-100 p-4">
+                    <h5 class="fw-bold mb-1">錯題本</h5>
+                    <p class="text-secondary mb-0">自動收集你曾答錯的題目。</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card-clean h-100 p-4">
+                    <h5 class="fw-bold mb-1">智能推薦</h5>
+                    <p class="text-secondary mb-0">依弱項推薦，加強記憶曲線。</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card-clean h-100 p-4">
+                    <h5 class="fw-bold mb-1">解析深度</h5>
+                    <p class="text-secondary mb-0">提供詳盡步驟與重點註記。</p>
+                </div>
+            </div>
+        </div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.MQBSort)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QContent)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QOptionA)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QOptionB)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QOptionC)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QOptionD)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QAns)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QExplain)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImgQContent)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImgQOptionA)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImgQOptionB)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImgQOptionC)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImgQOptionD)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImgQAns)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImgQExplain)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MQBSession)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Image)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ChapterDetail1.ChapterDetailContent)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MQBChapter1.ChapterContent)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MQBClassName.MQBClassName1)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MQBTeam.MQBTeamYN)
-        </th>
-        <th></th>
-    </tr>
+        
+    </div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.MQBSort)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QContent)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QOptionA)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QOptionB)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QOptionC)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QOptionD)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QAns)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QExplain)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImgQContent)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImgQOptionA)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImgQOptionB)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImgQOptionC)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImgQOptionD)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImgQAns)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ImgQExplain)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MQBSession)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Image)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ChapterDetail1.ChapterDetailContent)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MQBChapter1.ChapterContent)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MQBClassName.MQBClassName1)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MQBTeam.MQBTeamYN)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.MQBPK }) |
-            @Html.ActionLink("Details", "Details", new { id=item.MQBPK }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.MQBPK })
-        </td>
-    </tr>
-}
-
-</table>
+   
+</div>

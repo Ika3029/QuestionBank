@@ -1,37 +1,83 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@{
+    var action = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+    var controller = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+    Func<string, string, string> isActive = (ctrl, act) =>
+    {
+        bool mc = controller.Equals(ctrl, System.StringComparison.OrdinalIgnoreCase);
+        bool ma = string.IsNullOrEmpty(act) || action.Equals(act, System.StringComparison.OrdinalIgnoreCase);
+        return (mc && ma) ? "active" : "";
+    };
+}
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - 我的 ASP.NET 應用程式</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>@(string.IsNullOrEmpty(ViewBag.Title) ? "QuestionBank ‧ 練習題庫" : ViewBag.Title + " - QuestionBank")</title>
+
+    <!-- 字型 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+<body class="app-body">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top app-navbar">
         <div class="container">
-            @Html.ActionLink("應用程式名稱", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="切換導覽" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="@Url.Action("Index","Home")">
+                <span class="brand-badge">QB</span>
+                <span>
+                    <span class="fw-bold">QuestionBank</span>
+                    <small class="text-muted d-none d-sm-inline">練習題庫</small>
+                </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                    aria-controls="mainNav" aria-expanded="false" aria-label="切換導覽">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("首頁", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("關於", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("連絡人", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        @Html.ActionLink("首頁", "Index", "Home", null, new { @class = "nav-link " + isActive("Home", "Index") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("練習", "Practice", "Home", null, new { @class = "nav-link " + isActive("Home", "Practice") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("成績分析", "Analytics", "Home", null, new { @class = "nav-link " + isActive("Home", "Analytics") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("管理後台", "Questions_Index", "ManageQuestions", null, new { @class = "nav-link " + isActive("ManageQuestions", "Questions_Index") })
+                    </li>
+
                 </ul>
+
+                <div class="ms-lg-3 mt-3 mt-lg-0">
+                    <a class="btn btn-primary btn-round fw-semibold px-4" href="@Url.Action("Practice","Home")">開始練習</a>
+                </div>
             </div>
         </div>
     </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - 我的 ASP.NET 應用程式</p>
-        </footer>
-    </div>
+
+    <!-- Main -->
+    <main class="py-4">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-top">
+        <div class="container py-4 small text-muted d-flex justify-content-between flex-wrap gap-2">
+            <span>© @DateTime.Now.Year QuestionBank — 模擬練習平台</span>
+            
+        </div>
+    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
