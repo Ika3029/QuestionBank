@@ -273,9 +273,12 @@
     <Content Include="Views\UsersStd\Std_Edit.cshtml" />
     <Content Include="Views\UsersStd\Std_Delete.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\ManageExams\Exams_Index.cshtml" />
+    <Content Include="Views\ManageExams\Exams_Create.cshtml" />
+    <Content Include="Views\ManageExams\SelectQuestions.cshtml" />
+    <Content Include="Views\ManageExams\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\ManageExams\" />
     <Folder Include="Views\ManageLookups\" />
   </ItemGroup>
   <ItemGroup>
