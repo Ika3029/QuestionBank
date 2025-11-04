@@ -1,35 +1,32 @@
-﻿
-
-@model 專題MVC修正.Models.ExamMaster
+﻿@model 專題MVC修正.Models.DTOs.ExamDetailsVM
 @{
-    ViewBag.Title = "Details";
-    var details = ViewBag.Details as IEnumerable<dynamic>; // 由 Controller 塞匿名型別
+    ViewBag.Title = "測驗卷明細";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="m-0">測驗卷：@Model.ExamName (@Model.ExamID)</h3>
-    <a class="btn btn-outline-secondary" href="@Url.Action("Exams_Index")">返回列表</a>
+    <h3 class="m-0">測驗卷：@Model.Exam.ExamName (@Model.Exam.ExamID)</h3>
+    <a class="btn btn-outline-secondary" href="@Url.Action("Exams_Index","ManageExams")">返回列表</a>
 </div>
 
 <div class="card-clean p-4 mb-3">
     <div class="row">
-        <div class="col-md-4"><div class="text-secondary small">ExamID</div><div class="fw-medium">@Model.ExamID</div></div>
-        
+        <div class="col-md-4"><div class="text-secondary small">ExamID</div><div class="fw-medium">@Model.Exam.ExamID</div></div>
+        <div class="col-md-4"><div class="text-secondary small">開始</div><div class="fw-medium">@Model.Exam.ExamSDate</div></div>
+        <div class="col-md-4"><div class="text-secondary small">結束</div><div class="fw-medium">@Model.Exam.ExamEDate</div></div>
     </div>
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-2">
     <h5 class="m-0">已加入題目</h5>
-    <a class="btn btn-primary" href="@Url.Action("SelectQuestions", new { id = Model.ExamID, team = 0, score = 1 })">手動挑題</a>
+    <a class="btn btn-primary" href="@Url.Action("SelectQuestions", "ManageExams", new { id = Model.Exam.ExamID, team = 0, score = 1 })">手動挑題</a>
 </div>
 
-@if (details == null || !details.Any())
+@if (Model.Details == null || !Model.Details.Any())
 {
     <div class="alert alert-info">此測驗卷尚未加入題目。</div>
 }
 else
-{
-    <div class="table-responsive card-clean p-0">
+{                                                                                                   <div class="table-responsive card-clean p-0">
         <table class="table mb-0 align-middle">
             <thead>
                 <tr>
@@ -40,12 +37,12 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var d in details)
+                @foreach (var d in Model.Details)
                 {
                     <tr>
                         <td>@d.ExamDetPK</td>
                         <td>@Html.Raw(d.QContent)</td>
-                        <td>@d.ExamDefaultScore</td>
+                        <td>@(d.ExamDefaultScore ?? 0)</td>
                         <td>
                             @using (Html.BeginForm("RemoveDetail", "ManageExams", FormMethod.Post))
                             {
@@ -60,5 +57,3 @@ else
         </table>
     </div>
 }
-
-

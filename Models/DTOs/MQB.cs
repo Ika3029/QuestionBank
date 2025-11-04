@@ -28,4 +28,19 @@ namespace 專題MVC修正.Models.DTOs
             public int MQBTeamPK { get; set; }
             public int ExamID { get; set; }
      }
- }
+
+    public class ExamDetailRowVM
+    {
+        public int ExamDetPK { get; set; }   // PK_ExamDetail
+        public double? ExamDefaultScore { get; set; } // float -> C# double?
+        public int? ExamMQBPK { get; set; }   // 可為 null
+        public string QContent { get; set; }
+        public string QAns { get; set; }
+    }
+
+    public class ExamDetailsVM
+    {
+        public ExamMaster Exam { get; set; }
+        public List<ExamDetailRowVM> Details { get; set; }
+    }
+}

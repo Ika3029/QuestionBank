@@ -30,7 +30,13 @@ namespace 專題MVC修正.Controllers.Manage
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Exams_Create(string ExamName, int MQBTeamPK, bool IsRandom, int QuestionCount = 10, int ScorePerQuestion = 1)
+        public ActionResult Exams_Create(
+    string ExamName,
+    int MQBTeamPK,
+    bool IsRandom,
+    int QuestionCount = 10,
+    double ScorePerQuestion = 1 // ← float 對應 C# 用 double
+)
         {
             if (string.IsNullOrWhiteSpace(ExamName))
                 ModelState.AddModelError("", "請輸入測驗卷名稱");
@@ -41,10 +47,17 @@ namespace 專題MVC修正.Controllers.Manage
                 return View();
             }
 
-            // 🔸先只寫必要欄位（避免 ExamDurationTime 等不存在造成紅線）
-            var em = new ExamMaster { ExamName = ExamName };
+            // 依你的規格：ExamSDate/ExamEDate/ExamDurationTime 必填
+            var now = DateTime.Now;
+            var em = new ExamMaster
+            {
+                ExamName = ExamName,
+                ExamSDate = now,
+                ExamEDate = now,           // 先同一天；之後在編輯頁修改
+                     // 規格預設 60 分鐘
+            };
             db.Set<ExamMaster>().Add(em);
-            db.SaveChanges(); // 取得 em.ExamID
+            db.SaveChanges(); // 取得 ExamID
 
             if (IsRandom)
             {
@@ -55,25 +68,29 @@ namespace 專題MVC修正.Controllers.Manage
                              .Select(q => q.MQBPK)
                              .ToList();
 
+                int sort = 1;
                 foreach (var qid in qids)
                 {
                     db.Set<ExamDetail>().Add(new ExamDetail
                     {
                         ExamID = em.ExamID,
-                        ExamQMode = "0",                // 0=題目、1=題組
-                        ExamMQBPK = qid,                // 🔴 正確欄位名
-                        ExamDefaultScore = ScorePerQuestion
+                        ExamQMode = "0",            // 題目
+                        ExamMQBPK = qid,            // 可為 null；這裡有值
+                        ExamMQBTeamPK = MQBTeamPK,  // 可為 null；提供參考
+                        ExamDefaultScore = ScorePerQuestion, // double? 對齊 float
+                        SortOrder = sort++
                     });
                 }
                 db.SaveChanges();
 
                 TempData["ok"] = $"測驗卷建立成功（隨機 {qids.Count} 題）";
-                return RedirectToAction("Index");
+                return RedirectToAction("Exams_Index");
             }
 
             // 手動挑題
             return RedirectToAction("SelectQuestions", new { id = em.ExamID, team = MQBTeamPK, score = ScorePerQuestion });
         }
+
 
         // 手動挑題（先不 join 類別表，避免 MQBClassPK 紅線）
         // 手動挑題（參數型別改成 int?，避免 int 和 string 比較）
@@ -117,7 +134,7 @@ namespace 專題MVC修正.Controllers.Manage
 
         // 手動挑題提交
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult SelectQuestions(int examMasterPK, int scorePerQuestion, int[] selectedQIds)
+        public ActionResult SelectQuestions(int examMasterPK, double scorePerQuestion, int[] selectedQIds)
         {
             if (selectedQIds == null || selectedQIds.Length == 0)
             {
@@ -125,19 +142,27 @@ namespace 專題MVC修正.Controllers.Manage
                 return RedirectToAction("Details", new { id = examMasterPK });
             }
 
+            // 取得目前排序最大值，接續排
+            int sort = (db.Set<ExamDetail>()
+                          .Where(d => d.ExamID == examMasterPK)
+                          .Select(d => (int?)d.SortOrder)
+                          .Max()) ?? 0;
+
             foreach (var qid in selectedQIds.Distinct())
             {
                 db.Set<ExamDetail>().Add(new ExamDetail
                 {
                     ExamID = examMasterPK,
                     ExamQMode = "0",
-                    ExamMQBPK = qid,               // 🔴 正確欄位名
-                    ExamDefaultScore = scorePerQuestion
+                    ExamMQBPK = qid,
+                    ExamDefaultScore = scorePerQuestion, // double? 對應 float
+                    SortOrder = ++sort
                 });
             }
             db.SaveChanges();
             return RedirectToAction("Details", new { id = examMasterPK });
         }
+
 
         // 明細（用 ExamDetail.ExamMQBPK 去 join 題庫）
         public ActionResult Details(int id)
@@ -145,23 +170,24 @@ namespace 專題MVC修正.Controllers.Manage
             var exam = db.Set<ExamMaster>().Find(id);
             if (exam == null) return HttpNotFound();
 
-            var dets = db.Set<ExamDetail>()
-                         .Where(d => d.ExamID == id)
-                         .Join(db.Set<MoodQuestionBank>(),
-                               d => d.ExamMQBPK,         // 🔴 正確欄位名
-                               q => q.MQBPK,
-                              (d, q) => new
-                              {
-                                  d.ExamDetPK,
-                                  d.ExamDefaultScore,
-                                  d.ExamMQBPK,
-                                  QContent = q.QContent,
-                                  QAns = q.QAns
-                              })
-                         .ToList();
+            var details = db.Set<ExamDetail>()
+                            .Where(d => d.ExamID == id)
+                            .Join(db.Set<MoodQuestionBank>(),
+                                  d => d.ExamMQBPK,     // join 題庫 PK
+                                  q => q.MQBPK,
+                                  (d, q) => new ExamDetailRowVM
+                                  {
+                                      ExamDetPK = d.ExamDetPK,               // ← PK_ExamDetail
+                                      ExamDefaultScore = d.ExamDefaultScore,  // double?
+                                      ExamMQBPK = d.ExamMQBPK,               // int?
+                                      QContent = q.QContent,
+                                      QAns = q.QAns
+                                  })
+                            .OrderBy(x => x.ExamDetPK) // 或 SortOrder
+                            .ToList();
 
-            ViewBag.Details = dets;
-            return View(exam);
+            var vm = new ExamDetailsVM { Exam = exam, Details = details };
+            return View(vm);
         }
 
         [HttpPost, ValidateAntiForgeryToken]
