@@ -1,0 +1,69 @@
+@model 專題MVC修正.Models.DTOs.ExamDetailsVM
+@{
+    ViewBag.Title = "測驗卷詳細";
+    var exam = Model.Exam;
+}
+
+<h2 class="fw-bold mb-3">測驗卷詳細</h2>
+
+<div class="card p-3 mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>ExamID</dt>
+                <dd>@exam.ExamID</dd>
+                <dt>測驗名稱</dt>
+                <dd>@exam.ExamName</dd>
+                <dt>開始時間</dt>
+                <dd>@exam.ExamSDate.ToString("yyyy/MM/dd HH:mm")</dd>
+                <dt>結束時間</dt>
+                <dd>@exam.ExamEDate.ToString("yyyy/MM/dd HH:mm")</dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <!-- 同上，欄位名稱是 ExamDuraionTime -->
+                <dt>測驗時長(分)</dt>
+                <dd>@exam.ExamDuraionTime</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-2">
+        @Html.ActionLink("返回清單", "Exam_Index", "ExamHistory", null, new { @class = "btn btn-secondary me-2" })
+
+        @using (Html.BeginForm("Exam_Delete", "ExamHistory", new { id = exam.ExamID }, FormMethod.Post, new { @class = "d-inline" }))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('確定要刪除這份考卷（ID=@exam.ExamID）嗎？此動作會連同題目明細一起刪除，且無法復原。');">
+                刪除此考卷
+            </button>
+        }
+    </div>
+</div>
+
+<h4 class="fw-bold mt-4 mb-2">題目明細</h4>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th style="width:90px;">明細ID</th>
+            <th style="width:120px;">MQB題庫代碼</th>
+            <th style="width:100px;">配分</th>
+            <th>題目內容</th>
+            <th style="width:200px;">答案</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in Model.Details)
+        {
+            <tr>
+                <td>@d.ExamDetPK</td>
+                <td>@d.ExamMQBPK</td>
+                <td>@d.ExamDefaultScore</td>
+                <td>@(string.IsNullOrEmpty(d.QContent) ? "(題組)" : d.QContent)</td>
+                <td>@d.QAns</td>
+            </tr>
+        }
+    </tbody>
+</table>

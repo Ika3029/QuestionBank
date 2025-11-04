@@ -134,6 +134,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Manage\ExamHistoryController.cs" />
     <Compile Include="Controllers\Manage\ManageExamsController.cs" />
     <Compile Include="Controllers\Manage\ManageLookupsController.cs" />
     <Compile Include="Controllers\Manage\ManageQuestionsController.cs" />
@@ -277,6 +278,8 @@
     <Content Include="Views\ManageExams\Exams_Create.cshtml" />
     <Content Include="Views\ManageExams\SelectQuestions.cshtml" />
     <Content Include="Views\ManageExams\Details.cshtml" />
+    <Content Include="Views\ExamHistory\Exam_Details.cshtml" />
+    <Content Include="Views\ExamHistory\Exam_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\ManageLookups\" />
