@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using 專題MVC修正.Models;
 using 專題MVC修正.Models.DTOs;
 using PagedList;
+using System.Data.Entity;
 
 namespace 專題MVC修正.Controllers.Manage
 {
@@ -91,7 +92,40 @@ namespace 專題MVC修正.Controllers.Manage
             return RedirectToAction("SelectQuestions", new { id = em.ExamID, team = MQBTeamPK, score = ScorePerQuestion });
         }
 
+        // POST: /Manage/ExamHistory/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Exam_Delete(int id)
+        {
+            using (var tx = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var details = db.ExamDetail.Where(d => d.ExamID == id);
+                    if (details.Any()) db.ExamDetail.RemoveRange(details);
 
+                    var exam = db.ExamMaster.FirstOrDefault(e => e.ExamID == id);
+                    if (exam == null)
+                    {
+                        TempData["Msg"] = "找不到要刪除的考卷。";
+                        return RedirectToAction("Exam_Index");
+                    }
+
+                    db.ExamMaster.Remove(exam);
+                    db.SaveChanges();
+                    tx.Commit();
+
+                    TempData["Msg"] = $"已刪除考卷（ID={id}）。";
+                    return RedirectToAction("Exam_Index");
+                }
+                catch (Exception ex)
+                {
+                    tx.Rollback();
+                    TempData["Msg"] = "刪除失敗：" + ex.Message;
+                    return RedirectToAction("Exam_Index");
+                }
+            }
+        }
         // 手動挑題（先不 join 類別表，避免 MQBClassPK 紅線）
         // 手動挑題（參數型別改成 int?，避免 int 和 string 比較）
         [HttpGet]

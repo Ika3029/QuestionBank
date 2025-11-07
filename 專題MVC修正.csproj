@@ -138,6 +138,7 @@
     <Compile Include="Controllers\Manage\ManageExamsController.cs" />
     <Compile Include="Controllers\Manage\ManageLookupsController.cs" />
     <Compile Include="Controllers\Manage\ManageQuestionsController.cs" />
+    <Compile Include="Controllers\Practice\PracticeController.cs" />
     <Compile Include="Controllers\User\UsersStdController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -280,6 +281,8 @@
     <Content Include="Views\ManageExams\Details.cshtml" />
     <Content Include="Views\ExamHistory\Exam_Details.cshtml" />
     <Content Include="Views\ExamHistory\Exam_Index.cshtml" />
+    <Content Include="Views\Practice\Practice_Index.cshtml" />
+    <Content Include="Views\Practice\Single.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\ManageLookups\" />

@@ -36,6 +36,76 @@ namespace 專題MVC修正.Controllers.Manage
 
             return View(list);
         }
+        // 建卷
+        [HttpGet]
+        public ActionResult Exam_Create()
+        {
+            ViewBag.MQBTeamPK = new SelectList(db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
+                                               "MQBTeamPK", "MQBTeamContent");
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Exam_Create(
+    string ExamName,
+    int MQBTeamPK,
+    bool IsRandom,
+    int QuestionCount = 10,
+    double ScorePerQuestion = 1 // ← float 對應 C# 用 double
+)
+        {
+            if (string.IsNullOrWhiteSpace(ExamName))
+                ModelState.AddModelError("", "請輸入測驗卷名稱");
+            if (!ModelState.IsValid)
+            {
+                ViewBag.MQBTeamPK = new SelectList(db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
+                                                   "MQBTeamPK", "MQBTeamContent", MQBTeamPK);
+                return View();
+            }
+
+            // 依你的規格：ExamSDate/ExamEDate/ExamDurationTime 必填
+            var now = DateTime.Now;
+            var em = new ExamMaster
+            {
+                ExamName = ExamName,
+                ExamSDate = now,
+                ExamEDate = now,           // 先同一天；之後在編輯頁修改
+                                           // 規格預設 60 分鐘
+            };
+            db.Set<ExamMaster>().Add(em);
+            db.SaveChanges(); // 取得 ExamID
+
+            if (IsRandom)
+            {
+                var qids = db.Set<MoodQuestionBank>()
+                             .Where(q => q.MQBTeamPK == MQBTeamPK)
+                             .OrderBy(q => Guid.NewGuid())
+                             .Take(QuestionCount)
+                             .Select(q => q.MQBPK)
+                             .ToList();
+
+                int sort = 1;
+                foreach (var qid in qids)
+                {
+                    db.Set<ExamDetail>().Add(new ExamDetail
+                    {
+                        ExamID = em.ExamID,
+                        ExamQMode = "0",            // 題目
+                        ExamMQBPK = qid,            // 可為 null；這裡有值
+                        ExamMQBTeamPK = MQBTeamPK,  // 可為 null；提供參考
+                        ExamDefaultScore = ScorePerQuestion, // double? 對齊 float
+                        SortOrder = sort++
+                    });
+                }
+                db.SaveChanges();
+
+                TempData["ok"] = $"測驗卷建立成功（隨機 {qids.Count} 題）";
+                return RedirectToAction("Exams_Index");
+            }
+
+            // 手動挑題
+            return RedirectToAction("SelectQuestions", new { id = em.ExamID, team = MQBTeamPK, score = ScorePerQuestion });
+        }
 
         // GET: /Manage/ExamHistory/Details/5
         public ActionResult Exam_Details(int id)

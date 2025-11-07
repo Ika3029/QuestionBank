@@ -84,3 +84,43 @@ textarea {
         top: 88px;
     }
 }
+/* 後台首頁卡片動畫 */
+.admin-tile {
+    position: relative;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    box-shadow: 0 6px 20px rgba(15,23,42,.04);
+    will-change: transform;
+}
+
+    .admin-tile:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 16px 40px rgba(15,23,42,.10);
+        border-color: #dbe3f0;
+    }
+
+    .admin-tile:focus-within {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 0 0 4px rgba(13,110,253,.15), 0 12px 32px rgba(15,23,42,.10);
+        border-color: #bcd0ff;
+    }
+
+/* 圖示大小與顏色 */
+.tile-icon i {
+    font-size: 2.6rem; /* 統一大圖示 */
+    line-height: 1;
+    color: #0d6efd; /* 預設藍；個別卡片可覆蓋 .text-primary/.text-success */
+}
+
+/* 讓整張卡片可點：配合 .stretched-link */
+.admin-tile .stretched-link::after {
+    border-radius: 1rem;
+}
+
+/* 行動裝置上稍微放小動畫，避免跳動太多 */
+@media (max-width: 575.98px) {
+    .admin-tile:hover {
+        transform: translateY(-2px) scale(1.01);
+    }
+}
