@@ -16,17 +16,17 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <h5 class="m-0">已加入題目</h5>
-    <a class="btn btn-primary" href="@Url.Action("SelectQuestions", "ManageExams", new { id = Model.Exam.ExamID, team = 0, score = 1 })">手動挑題</a>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="m-0">已加入題目</h5>
+        <a class="btn btn-primary" href="@Url.Action("SelectQuestions", "ManageExams", new { id = Model.Exam.ExamID, team = 0, score = 1 })">手動挑題</a>
+    </div>
 
 @if (Model.Details == null || !Model.Details.Any())
 {
     <div class="alert alert-info">此測驗卷尚未加入題目。</div>
 }
 else
-{                                                                                                   <div class="table-responsive card-clean p-0">
+{ <div class="table-responsive card-clean p-0">
         <table class="table mb-0 align-middle">
             <thead>
                 <tr>
@@ -44,7 +44,7 @@ else
                         <td>@Html.Raw(d.QContent)</td>
                         <td>@(d.ExamDefaultScore ?? 0)</td>
                         <td>
-                            @using (Html.BeginForm("RemoveDetail", "ManageExams", FormMethod.Post))
+                            @using (Html.BeginForm("SelectQuestions", "ManageExams", FormMethod.Post))
                             {
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@d.ExamDetPK" />
