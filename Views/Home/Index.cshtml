@@ -12,7 +12,8 @@
                 模擬考模式、單題練習、錯題本與個人化弱點分析，讓你在國考與課業準備上更有方向。
             </p>
             <div class="d-flex flex-wrap gap-3">
-                <a href="@Url.Action("Practice","Home")" class="btn btn-primary btn-lg px-4">立即開始練習</a>
+                <a href="@Url.Action("Index", "Practice")" class="btn btn-primary btn-lg px-4">立即開始練習</a>
+
                 <a href="@Url.Action("Analytics","Home")" class="btn btn-outline-secondary btn-lg px-4">查看成績分析</a>
             </div>
         </section>
@@ -20,7 +21,7 @@
         <div class="row g-3 mt-1">
             <div class="col-md-6">
                 <div class="card-clean h-100 p-4">
-                    <h5 class="fw-bold mb-1">模擬考</h5>
+                    <a href="@Url.Action("Exams_Index", "ManageExams")" class="btn btn-primary btn-lg px-4"><h5 class="fw-bold mb-1">模擬考</h5></a>
                     <p class="text-secondary mb-0">限時模擬真實考場。</p>
                 </div>
             </div>

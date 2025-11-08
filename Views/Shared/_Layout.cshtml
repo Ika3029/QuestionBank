@@ -8,23 +8,24 @@
         return (mc && ma) ? "active" : "";
     };
 }
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>@(string.IsNullOrEmpty(ViewBag.Title) ? "QuestionBank ‧ 練習題庫" : ViewBag.Title + " - QuestionBank")</title>
 
-    <!-- 字型 -->
+    <!-- 字型 & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
+
 <body class="app-body">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top app-navbar">
@@ -48,7 +49,8 @@
                         @Html.ActionLink("首頁", "Index", "Home", null, new { @class = "nav-link " + isActive("Home", "Index") })
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("練習", "Practice", "Home", null, new { @class = "nav-link " + isActive("Home", "Practice") })
+                        @* 練習：正確導向 PracticeController *@
+                        @Html.ActionLink("練習", "Index", "Practice", null, new { @class = "nav-link " + isActive("Practice", "Index") })
                     </li>
                     <li class="nav-item">
                         @Html.ActionLink("成績分析", "Analytics", "Home", null, new { @class = "nav-link " + isActive("Home", "Analytics") })
@@ -56,12 +58,14 @@
                     <li class="nav-item">
                         @Html.ActionLink("管理後台", "Index", "Admin", null, new { @class = "nav-link " + isActive("Admin", "Index") })
                     </li>
-
-
                 </ul>
 
                 <div class="ms-lg-3 mt-3 mt-lg-0">
-                    <a class="btn btn-primary btn-round fw-semibold px-4" href="@Url.Action("Practice","Home")">開始練習</a>
+                    @* ✅ 正確版本：導到 /Practice/Index （若有 Area 請加上 area="User"） *@
+                    <a class="btn btn-primary btn-round fw-semibold px-4"
+                       href="@Url.Action("Index", "Practice"/*, new { area = "User" }*/ )">
+                        開始練習
+                    </a>
                 </div>
             </div>
         </div>
@@ -78,7 +82,6 @@
     <footer class="border-top">
         <div class="container py-4 small text-muted d-flex justify-content-between flex-wrap gap-2">
             <span>© @DateTime.Now.Year QuestionBank — 模擬練習平台</span>
-            
         </div>
     </footer>
 
