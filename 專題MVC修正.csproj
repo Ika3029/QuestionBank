@@ -284,6 +284,8 @@
     <Content Include="Views\ExamHistory\Exam_Index.cshtml" />
     <Content Include="Views\Practice\Index.cshtml" />
     <Content Include="Views\Practice\Single.cshtml" />
+    <Content Include="Views\ManageExams\StartExam.cshtml" />
+    <Content Include="Views\ManageExams\SubmitExam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\ManageLookups\" />

@@ -1,0 +1,61 @@
+﻿@model 專題MVC修正.Controllers.Manage.ManageExamsController.ExamRunQuestionVM
+@{
+    ViewBag.Title = "開始考試";
+    var score = (double)ViewBag.ScorePerQuestion;
+}
+
+<h3 class="mb-3">開始考試</h3>
+
+<div class="card-clean p-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="fw-medium">題目 @Model.Index / @Model.Total</div>
+        <span class="badge bg-secondary">每題 @score 分</span>
+    </div>
+
+    <hr class="my-3" />
+
+    <div class="mb-3 fs-5">@Html.Raw(Model.QContent)</div>
+
+    @using (Html.BeginForm("StartExam", "ManageExams", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="examId" value="@Model.ExamID" />
+        <input type="hidden" name="mqbpk" value="@Model.MQBPK" />
+        <input type="hidden" name="index" value="@Model.Index" />
+
+        <div class="list-group">
+            <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="choice" value="A" @(Model.Selected == "A" ? "checked" : "") />
+                A. @Model.QOptionA
+            </label>
+            <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="choice" value="B" @(Model.Selected == "B" ? "checked" : "") />
+                B. @Model.QOptionB
+            </label>
+            <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="choice" value="C" @(Model.Selected == "C" ? "checked" : "") />
+                C. @Model.QOptionC
+            </label>
+            <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="choice" value="D" @(Model.Selected == "D" ? "checked" : "") />
+                D. @Model.QOptionD
+            </label>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-between">
+            <button name="nav" value="prev" class="btn btn-outline-secondary" @(Model.Index == 1 ? "disabled" : "")>
+                上一題
+            </button>
+
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-dark" href="@Url.Action("Details","ManageExams", new { id = Model.ExamID })">返回測驗卷</a>
+                <button name="nav" value="next" class="btn btn-primary" @(Model.Index == Model.Total ? "disabled" : "")>
+                    下一題
+                </button>
+                <button name="nav" value="finish" class="btn btn-success">
+                    交卷
+                </button>
+            </div>
+        </div>
+    }
+</div>

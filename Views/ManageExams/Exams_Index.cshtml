@@ -35,7 +35,7 @@ else
                         <td>@x.ExamName</td>
                         <td>
                             <a class="btn btn-sm btn-outline-secondary" href="@Url.Action("Details", new { id = x.ExamID })">明細</a>
-
+                            <a class="btn btn-sm btn-success ms-1" href="@Url.Action("StartExam", "ManageExams", new { id = x.ExamID })">開始考試</a>
                         </td>
                     </tr>
                 }

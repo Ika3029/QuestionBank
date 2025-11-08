@@ -1,0 +1,66 @@
+﻿@model 專題MVC修正.Controllers.Manage.ManageExamsController.ExamRunResultVM
+@{
+    ViewBag.Title = "作答結果";
+}
+
+<h3 class="mb-3">作答結果</h3>
+
+<div class="card-clean p-4">
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="text-secondary small">測驗卷</div>
+            <div class="fw-medium">@Model.Exam.ExamName (@Model.Exam.ExamID)</div>
+        </div>
+        <div class="col-md-2">
+            <div class="text-secondary small">題數</div>
+            <div class="fw-medium">@Model.Total</div>
+        </div>
+        <div class="col-md-2">
+            <div class="text-secondary small">答對</div>
+            <div class="fw-medium">@Model.CorrectCount</div>
+        </div>
+        <div class="col-md-2">
+            <div class="text-secondary small">總分</div>
+            <div class="fw-bold fs-5">@Model.TotalScore</div>
+        </div>
+    </div>
+
+    <hr class="my-3" />
+    <h5 class="mb-3">詳解</h5>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th style="width:80px;">題號</th>
+                    <th>題目</th>
+                    <th style="width:120px;">我的答案</th>
+                    <th style="width:120px;">正確答案</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Detail)
+                {
+                    // row = (int No, string UserAns, string CorrectAns, string QContent)
+                    var no = row.Item1;
+                    var userAns = row.Item2;
+                    var correctAns = row.Item3;
+                    var qcontent = row.Item4;
+
+                    var ok = string.Equals(userAns, correctAns, StringComparison.OrdinalIgnoreCase);
+                    <tr class="@(ok ? "" : "table-danger")">
+                        <td>@no</td>
+                        <td>@Html.Raw(qcontent)</td>
+                        <td>@(string.IsNullOrWhiteSpace(userAns) ? "（未作答）" : userAns)</td>
+                        <td>@correctAns</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-3 d-flex gap-2">
+        <a class="btn btn-primary" href="@Url.Action("StartExam","ManageExams", new { id = Model.Exam.ExamID })">重新作答</a>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Details","ManageExams", new { id = Model.Exam.ExamID })">回到測驗卷</a>
+    </div>
+</div>
