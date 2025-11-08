@@ -24,30 +24,34 @@ namespace 專題MVC修正.Controllers.Manage
         [HttpGet]
         public ActionResult Exams_Create()
         {
-            ViewBag.MQBTeamPK = new SelectList(db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
-                                               "MQBTeamPK", "MQBTeamContent");
+            // ▼ 改：用科別（JOIN 顯示中文名在 View）
+            ViewBag.MQBClassPK = new SelectList(
+                db.Set<MQBClassName>().OrderBy(x => x.MQBClassName1).ToList(),
+                "MQBClassPK", "MQBClassName1"
+            );
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Exams_Create(
             string ExamName,
-            int MQBTeamPK,
+            int MQBClassPK,          // ▼ 改：用科別 PK
             bool IsRandom,
             int QuestionCount = 10,
-            double ScorePerQuestion = 1 // float 對應 C# 用 double
+            double ScorePerQuestion = 1
         )
         {
             if (string.IsNullOrWhiteSpace(ExamName))
                 ModelState.AddModelError("", "請輸入測驗卷名稱");
             if (!ModelState.IsValid)
             {
-                ViewBag.MQBTeamPK = new SelectList(db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
-                                                   "MQBTeamPK", "MQBTeamContent", MQBTeamPK);
+                ViewBag.MQBClassPK = new SelectList(
+                    db.Set<MQBClassName>().OrderBy(x => x.MQBClassName1).ToList(),
+                    "MQBClassPK", "MQBClassName1", MQBClassPK
+                );
                 return View();
             }
 
-            // 必填：ExamSDate/ExamEDate
             var now = DateTime.Now;
             var em = new ExamMaster
             {
@@ -60,8 +64,9 @@ namespace 專題MVC修正.Controllers.Manage
 
             if (IsRandom)
             {
+                // ▼ 改：依科別抽題
                 var qids = db.Set<MoodQuestionBank>()
-                             .Where(q => q.MQBTeamPK == MQBTeamPK)
+                             .Where(q => q.QClass == MQBClassPK)
                              .OrderBy(q => Guid.NewGuid())
                              .Take(QuestionCount)
                              .Select(q => q.MQBPK)
@@ -75,7 +80,7 @@ namespace 專題MVC修正.Controllers.Manage
                         ExamID = em.ExamID,
                         ExamQMode = "0",
                         ExamMQBPK = qid,
-                        ExamMQBTeamPK = MQBTeamPK,
+                        // ExamMQBTeamPK 可不填；若你要保留可加欄位 ExamMQBClassPK
                         ExamDefaultScore = ScorePerQuestion,
                         SortOrder = sort++
                     });
@@ -86,15 +91,15 @@ namespace 專題MVC修正.Controllers.Manage
                 return RedirectToAction("Exams_Index");
             }
 
-            // 手動挑題（帶入 team 與 score）
-            return RedirectToAction("SelectQuestions", new { id = em.ExamID, team = MQBTeamPK, score = ScorePerQuestion });
+            // 手動挑題：帶入科別
+            return RedirectToAction("SelectQuestions", new { id = em.ExamID, qclass = MQBClassPK, score = ScorePerQuestion });
         }
 
-        // 手動挑題（GET）— 加入下拉篩選 + 分頁
+        // 手動挑題（GET）— 用「科別(QClass)」篩選 + 分頁 + 顯示中文科別名稱（修正編譯錯誤）
         [HttpGet]
         public ActionResult SelectQuestions(
             int id,
-            int? team = null,
+            int? qclass = null,
             int? qtype = null,
             int? chapter = null,
             int? session = null,
@@ -107,17 +112,14 @@ namespace 專題MVC修正.Controllers.Manage
             ViewBag.ExamMasterPK = id;
             ViewBag.ScorePerQuestion = score;
 
-            // 先組 base query
+            // 下拉資料來源（科別、題型、章、節）
             var baseQ = db.Set<MoodQuestionBank>().AsQueryable();
-
-            // 用於下拉來源：可依 team 篩選後再取 distinct（體感較友善）
             var sourceForFilters = baseQ;
-            if (team.HasValue) sourceForFilters = sourceForFilters.Where(x => x.MQBTeamPK == team.Value);
+            if (qclass.HasValue) sourceForFilters = sourceForFilters.Where(x => x.QClass == qclass.Value);
 
-            // 下拉資料（隊別、題型、章、節）
-            ViewBag.TeamList = new SelectList(
-                db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
-                "MQBTeamPK", "MQBTeamContent", team
+            ViewBag.ClassList = new SelectList(
+                db.Set<MQBClassName>().OrderBy(x => x.MQBClassName1).ToList(),
+                "MQBClassPK", "MQBClassName1", qclass
             );
 
             ViewBag.QtypeList = new SelectList(
@@ -138,19 +140,19 @@ namespace 專題MVC修正.Controllers.Manage
                 "Value", "Text", session
             );
 
-            // 讓 View 能保留目前篩選值
-            ViewBag.Team = team;
+            // 保留目前篩選值
+            ViewBag.QClass = qclass;
             ViewBag.QType = qtype;
             ViewBag.Chapter = chapter;
             ViewBag.Session = session;
             ViewBag.Keyword = keyword;
 
-            // 主查詢：join 隊別、依條件過濾
+            // 主查詢：JOIN 科別表，顯示中文名稱
             var query = from q in db.Set<MoodQuestionBank>()
-                        join t in db.Set<MQBTeam>() on q.MQBTeamPK equals t.MQBTeamPK
-                        select new { q, t };
+                        join c in db.Set<MQBClassName>() on q.QClass equals c.MQBClassPK
+                        select new { q, c };
 
-            if (team.HasValue) query = query.Where(x => x.q.MQBTeamPK == team.Value);
+            if (qclass.HasValue) query = query.Where(x => x.q.QClass == qclass.Value);
             if (qtype.HasValue) query = query.Where(x => x.q.QType == qtype.Value);
             if (chapter.HasValue) query = query.Where(x => x.q.MQBChapter == chapter.Value);
             if (session.HasValue) query = query.Where(x => x.q.MQBSession == session.Value);
@@ -162,10 +164,10 @@ namespace 專題MVC修正.Controllers.Manage
                 .ThenByDescending(x => x.q.MQBPK)
                 .Select(x => new ExamDselectlist
                 {
-                    MQBClassPK = 0,
-                    MQBClassName1 = null,
-                    MQBTeamContent = x.t.MQBTeamContent,
-                    MQBTeamYN = x.t.MQBTeamYN,
+                    MQBClassPK = x.q.QClass,          // ← 去掉 ?? 0，因為是非 nullable int
+                    MQBClassName1 = x.c.MQBClassName1,    // 中文科別名
+                    MQBTeamContent = null,                // 你如不需要，可留空
+                    MQBTeamYN = null,
                     MQBSort = x.q.MQBSort,
                     MQBChapter = x.q.MQBChapter.ToString(),
                     MQBSession = x.q.MQBSession.ToString(),
@@ -177,10 +179,10 @@ namespace 專題MVC修正.Controllers.Manage
                     QOptionD = x.q.QOptionD,
                     ExamDefaultScore = score,
                     MQBPK = x.q.MQBPK,
-                    MQBTeamPK = x.q.MQBTeamPK,
+                    MQBTeamPK = 0,                        // ← 不給 null，若 DTO 是 int
                     ExamID = id
                 })
-                .ToPagedList(page < 1 ? 1 : page, pageSize);   // ← 分頁
+                .ToPagedList(page < 1 ? 1 : page, pageSize);
 
             return View(paged);
         }
@@ -196,7 +198,6 @@ namespace 專題MVC修正.Controllers.Manage
                 return RedirectToAction("Details", new { id = examMasterPK });
             }
 
-            // 取得目前排序最大值，接續排
             int sort = (db.Set<ExamDetail>()
                           .Where(d => d.ExamID == examMasterPK)
                           .Select(d => (int?)d.SortOrder)
@@ -236,7 +237,7 @@ namespace 專題MVC修正.Controllers.Manage
                                       QContent = q.QContent,
                                       QAns = q.QAns
                                   })
-                            .OrderBy(x => x.ExamDetPK) // 或 SortOrder
+                            .OrderBy(x => x.ExamDetPK)
                             .ToList();
 
             var vm = new ExamDetailsVM { Exam = exam, Details = details };
