@@ -50,7 +50,7 @@
                     </li>
                     <li class="nav-item">
                         @* 練習：正確導向 PracticeController *@
-                        @Html.ActionLink("練習", "Index", "Practice", null, new { @class = "nav-link " + isActive("Practice", "Index") })
+                        @Html.ActionLink("測驗卷", "Exams_Index", "ManageExams", null, new { @class = "nav-link " + isActive("Practice", "Index") })
                     </li>
                     <li class="nav-item">
                         @Html.ActionLink("成績分析", "Analytics", "Home", null, new { @class = "nav-link " + isActive("Home", "Analytics") })
