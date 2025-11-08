@@ -1,0 +1,106 @@
+﻿@model 專題MVC修正.Models.DTOs.PracticeVM
+
+@{
+    ViewBag.Title = "單題練習";
+    Func<string, bool> has = s => !string.IsNullOrWhiteSpace(s);
+}
+
+<div class="container py-3">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="card p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0">科別(QClass)：@Model.ClassName (@Model.ClassId)</h5>
+                    <span class="badge bg-secondary">模式：single</span>
+                </div>
+
+                <hr />
+                <h6 class="mb-2">題目</h6>
+                <p class="fs-5">@Model.Content</p>
+                @if (has(Model.ImgContentDataUrl))
+                {
+                    <div class="mb-3">
+                        <img src="@Model.ImgContentDataUrl" class="img-fluid" alt="題目圖片" />
+                    </div>
+                }
+
+                @* ⬇⬇ 一定要指向 Single *@
+                @using (Html.BeginForm("Single", "Practice", FormMethod.Post))
+                {   @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.MQBPK)
+                    @Html.HiddenFor(m => m.ClassId)
+                    @Html.HiddenFor(m => m.ClassName)
+
+                    <div class="mt-3">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" id="optA" name="SelectedAnswer" value="A" @(Model.IsAnswered ? "disabled" : "") />
+                            <label class="form-check-label" for="optA"><strong>A.</strong> @Model.OptionA</label>
+                            @if (has(Model.ImgOptionADataUrl))
+                            {<div><img src="@Model.ImgOptionADataUrl" class="img-fluid mt-1" /></div>}
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" id="optB" name="SelectedAnswer" value="B" @(Model.IsAnswered ? "disabled" : "") />
+                            <label class="form-check-label" for="optB"><strong>B.</strong> @Model.OptionB</label>
+                            @if (has(Model.ImgOptionBDataUrl))
+                            {<div><img src="@Model.ImgOptionBDataUrl" class="img-fluid mt-1" /></div>}
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" id="optC" name="SelectedAnswer" value="C" @(Model.IsAnswered ? "disabled" : "") />
+                            <label class="form-check-label" for="optC"><strong>C.</strong> @Model.OptionC</label>
+                            @if (has(Model.ImgOptionCDataUrl))
+                            {<div><img src="@Model.ImgOptionCDataUrl" class="img-fluid mt-1" /></div>}
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" id="optD" name="SelectedAnswer" value="D" @(Model.IsAnswered ? "disabled" : "") />
+                            <label class="form-check-label" for="optD"><strong>D.</strong> @Model.OptionD</label>
+                            @if (has(Model.ImgOptionDDataUrl))
+                            {<div><img src="@Model.ImgOptionDDataUrl" class="img-fluid mt-1" /></div>}
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary" @(Model.IsAnswered ? "disabled" : "")>提交答案</button>
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary ms-2">回條件</a>
+                    </div>
+                }
+
+                @if (Model.IsAnswered)
+                {
+                    <hr />
+                    <div class="mt-2">
+                        <p class="mb-1"><strong>正確答案：</strong>@Model.CorrectAnswer</p>
+                        <p class="mb-1"><strong>你的作答：</strong>@Model.SelectedAnswer</p>
+                        @if (Model.IsCorrect)
+                        {<p class="text-success fw-bold">✅ 恭喜答對！</p> }
+                        else
+                        { <p class="text-danger fw-bold">❌ 答錯了</p>}
+
+                        <div class="mt-2">
+                            <p><strong>解析：</strong>@Model.Explanation</p>
+                            @if (has(Model.ImgExplanationDataUrl))
+                            {
+                                <div><img src="@Model.ImgExplanationDataUrl" class="img-fluid mt-1" /></div>
+                            }
+                        </div>
+
+                        <a class="btn btn-success mt-3" href="@Url.Action("Single", new { classId = Model.ClassId })">下一題</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="card p-3">
+                <h6 class="mb-3">快速重抽</h6>
+                @* ⬇⬇ 這裡也要指向 Single *@
+                <form method="get" action="@Url.Action("Single")">
+                    <div class="mb-2">
+                        <label class="form-label">科別(QClass)</label>
+                        <input name="classId" class="form-control" value="@Model.ClassId" />
+                    </div>
+                    <button class="btn btn-outline-primary w-100">重新抽題</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

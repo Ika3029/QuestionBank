@@ -43,4 +43,5 @@ namespace 專題MVC修正.Models.DTOs
         public ExamMaster Exam { get; set; }
         public List<ExamDetailRowVM> Details { get; set; }
     }
+
 }
