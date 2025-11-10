@@ -21,7 +21,7 @@ namespace 專題MVC修正.Controllers.Manage
             return View(data);
         }
 
-        // ====== 建卷（GET）— 科別下拉 ======
+        // ====== 建卷（GET）— 科別 & 題組 下拉 ======
         [HttpGet]
         public ActionResult Exams_Create()
         {
@@ -29,14 +29,19 @@ namespace 專題MVC修正.Controllers.Manage
                 db.Set<MQBClassName>().OrderBy(x => x.MQBClassName1).ToList(),
                 "MQBClassPK", "MQBClassName1"
             );
+            ViewBag.MQBTeamPK = new SelectList(
+                db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
+                "MQBTeamPK", "MQBTeamContent"
+            );
             return View();
         }
 
-        // ====== 建卷（POST）— 可隨機抽題（依科別）或進手動挑題 ======
+        // ====== 建卷（POST）— 依「科別 + 題組(可選)」做隨機或進手動挑題 ======
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Exams_Create(
             string ExamName,
-            int MQBClassPK,          // 以科別 PK 為基準
+            int MQBClassPK,          // 必選：科別
+            int? MQBTeamPK,          // 可選：題組
             bool IsRandom,
             int QuestionCount = 10,
             double ScorePerQuestion = 1
@@ -50,6 +55,10 @@ namespace 專題MVC修正.Controllers.Manage
                 ViewBag.MQBClassPK = new SelectList(
                     db.Set<MQBClassName>().OrderBy(x => x.MQBClassName1).ToList(),
                     "MQBClassPK", "MQBClassName1", MQBClassPK
+                );
+                ViewBag.MQBTeamPK = new SelectList(
+                    db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
+                    "MQBTeamPK", "MQBTeamContent", MQBTeamPK
                 );
                 return View();
             }
@@ -66,13 +75,14 @@ namespace 專題MVC修正.Controllers.Manage
 
             if (IsRandom)
             {
-                // 依科別隨機抽題
-                var qids = db.Set<MoodQuestionBank>()
-                             .Where(q => q.QClass == MQBClassPK)
-                             .OrderBy(q => Guid.NewGuid())
-                             .Take(QuestionCount)
-                             .Select(q => q.MQBPK)
-                             .ToList();
+                // 依「科別 + 題組(可選)」過濾後抽題
+                var qset = db.Set<MoodQuestionBank>().Where(q => q.QClass == MQBClassPK);
+                if (MQBTeamPK.HasValue) qset = qset.Where(q => q.MQBTeamPK == MQBTeamPK.Value);
+
+                var qids = qset.OrderBy(q => Guid.NewGuid())
+                               .Take(QuestionCount)
+                               .Select(q => q.MQBPK)
+                               .ToList();
 
                 int sort = 1;
                 foreach (var qid in qids)
@@ -92,15 +102,22 @@ namespace 專題MVC修正.Controllers.Manage
                 return RedirectToAction("Exams_Index");
             }
 
-            // 手動挑題：帶入科別與每題分數
-            return RedirectToAction("SelectQuestions", new { id = em.ExamID, qclass = MQBClassPK, score = ScorePerQuestion });
+            // 手動挑題：把科別 & 題組條件帶過去
+            return RedirectToAction("SelectQuestions", new
+            {
+                id = em.ExamID,
+                qclass = MQBClassPK,
+                team = MQBTeamPK,     // 可能為 null，沒關係
+                score = ScorePerQuestion
+            });
         }
 
-        // ====== 手動挑題（GET）— 以科別篩選 + 分頁 + 顯示中文科別名稱 ======
+        // ====== 手動挑題（GET）— 以「科別 + 題組」篩選 + 分頁 + 顯示中文科別/題組 ======
         [HttpGet]
         public ActionResult SelectQuestions(
             int id,
             int? qclass = null,
+            int? team = null,           // 題組(MQBTeamPK)
             int? qtype = null,
             int? chapter = null,
             int? session = null,
@@ -113,43 +130,55 @@ namespace 專題MVC修正.Controllers.Manage
             ViewBag.ExamMasterPK = id;
             ViewBag.ScorePerQuestion = score;
 
-            // 下拉資料來源（科別、題型、章、節）
+            // 下拉來源：依目前的 qclass / team 先過濾
             var baseQ = db.Set<MoodQuestionBank>().AsQueryable();
-            var sourceForFilters = qclass.HasValue ? baseQ.Where(x => x.QClass == qclass.Value) : baseQ;
+            if (qclass.HasValue) baseQ = baseQ.Where(x => x.QClass == qclass.Value);
+            if (team.HasValue) baseQ = baseQ.Where(x => x.MQBTeamPK == team.Value);
 
+            // 科別下拉
             ViewBag.ClassList = new SelectList(
                 db.Set<MQBClassName>().OrderBy(x => x.MQBClassName1).ToList(),
                 "MQBClassPK", "MQBClassName1", qclass
             );
+            // 題組下拉
+            ViewBag.TeamList = new SelectList(
+                db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
+                "MQBTeamPK", "MQBTeamContent", team
+            );
+            //其他下拉
             ViewBag.QtypeList = new SelectList(
-                sourceForFilters.Select(x => x.QType).Distinct().OrderBy(x => x)
-                                .Select(x => new { Value = x, Text = x.ToString() }).ToList(),
+                baseQ.Select(x => x.QType).Distinct().OrderBy(x => x)
+                     .Select(x => new { Value = x, Text = x.ToString() }).ToList(),
                 "Value", "Text", qtype
             );
             ViewBag.ChapterList = new SelectList(
-                sourceForFilters.Select(x => x.MQBChapter).Distinct().OrderBy(x => x)
-                                .Select(x => new { Value = x, Text = x.ToString() }).ToList(),
+                baseQ.Select(x => x.MQBChapter).Distinct().OrderBy(x => x)
+                     .Select(x => new { Value = x, Text = x.ToString() }).ToList(),
                 "Value", "Text", chapter
             );
             ViewBag.SessionList = new SelectList(
-                sourceForFilters.Select(x => x.MQBSession).Distinct().OrderBy(x => x)
-                                .Select(x => new { Value = x, Text = x.ToString() }).ToList(),
+                baseQ.Select(x => x.MQBSession).Distinct().OrderBy(x => x)
+                     .Select(x => new { Value = x, Text = x.ToString() }).ToList(),
                 "Value", "Text", session
             );
 
             // 保留目前篩選值
             ViewBag.QClass = qclass;
+            ViewBag.Team = team;
             ViewBag.QType = qtype;
             ViewBag.Chapter = chapter;
             ViewBag.Session = session;
             ViewBag.Keyword = keyword;
 
-            // 主查詢：JOIN 科別中文名
+            // 主查詢：JOIN 科別；題組用 LEFT JOIN
             var query = from q in db.Set<MoodQuestionBank>()
                         join c in db.Set<MQBClassName>() on q.QClass equals c.MQBClassPK
-                        select new { q, c };
+                        join t0 in db.Set<MQBTeam>() on q.MQBTeamPK equals t0.MQBTeamPK into tj
+                        from t in tj.DefaultIfEmpty()
+                        select new { q, c, t };
 
             if (qclass.HasValue) query = query.Where(x => x.q.QClass == qclass.Value);
+            if (team.HasValue) query = query.Where(x => x.q.MQBTeamPK == team.Value);
             if (qtype.HasValue) query = query.Where(x => x.q.QType == qtype.Value);
             if (chapter.HasValue) query = query.Where(x => x.q.MQBChapter == chapter.Value);
             if (session.HasValue) query = query.Where(x => x.q.MQBSession == session.Value);
@@ -161,10 +190,15 @@ namespace 專題MVC修正.Controllers.Manage
                 .ThenByDescending(x => x.q.MQBPK)
                 .Select(x => new ExamDselectlist
                 {
+                    // 科別
                     MQBClassPK = x.q.QClass,
-                    MQBClassName1 = x.c.MQBClassName1,    // 中文科別名
-                    MQBTeamContent = null,                // 不再使用隊別
-                    MQBTeamYN = null,
+                    MQBClassName1 = x.c.MQBClassName1,
+
+                    // 題組（注意：q.MQBTeamPK 是 int，不要用 HasValue/Value）
+                    MQBTeamPK = x.q.MQBTeamPK,
+                    MQBTeamContent = x.t != null ? x.t.MQBTeamContent : null,
+                    MQBTeamYN = x.t != null ? x.t.MQBTeamYN : null,
+
                     MQBSort = x.q.MQBSort,
                     MQBChapter = x.q.MQBChapter.ToString(),
                     MQBSession = x.q.MQBSession.ToString(),
@@ -176,13 +210,13 @@ namespace 專題MVC修正.Controllers.Manage
                     QOptionD = x.q.QOptionD,
                     ExamDefaultScore = score,
                     MQBPK = x.q.MQBPK,
-                    MQBTeamPK = 0,                        // DTO 若是 int 非 nullable，就給 0
                     ExamID = id
                 })
                 .ToPagedList(page < 1 ? 1 : page, pageSize);
 
             return View(paged);
         }
+
 
         // ====== 手動挑題（POST）— 加入所選題目 ======
         [HttpPost, ValidateAntiForgeryToken]

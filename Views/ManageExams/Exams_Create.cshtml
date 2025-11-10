@@ -1,48 +1,56 @@
-﻿
-
-@model dynamic
+﻿@model dynamic
 @{
     ViewBag.Title = "Exams_Create";
 }
-
-
 <h3 class="mb-3">建立測驗卷</h3>
 
 @using (Html.BeginForm("Exams_Create", "ManageExams", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
-<div class="card-clean p-4">
-    <div class="mb-3">
-        <label class="form-label">測驗卷名稱</label>
-        <input name="ExamName" class="form-control" placeholder="例如：內科模擬考（一）" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">科別（MQBClassName）</label>
-        @Html.DropDownList("MQBClassPK", (SelectList)ViewBag.MQBClassPK, "-- 請選擇科別 --", new { @class = "form-select" })
-    </div>
-
-
-    <div class="row g-3">
-        <div class="col-md-4">
-            <label class="form-label">是否隨機抽題</label><br />
-            <input type="checkbox" name="IsRandom" value="true" /> <span class="ms-1">使用隨機題</span>
-            <input type="hidden" name="IsRandom" value="false" />
+    <div class="card-clean p-4">
+        <div class="mb-3">
+            <label class="form-label">測驗卷名稱</label>
+            <input name="ExamName" class="form-control" placeholder="例如：內科模擬考（一）" />
         </div>
-        <div class="col-md-4">
-            <label class="form-label">抽題數量（隨機時）</label>
-            <input type="number" name="QuestionCount" value="10" min="1" class="form-control" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">每題分數</label>
-            <input type="number" name="ScorePerQuestion" value="1" min="1" class="form-control" />
-        </div>
-    </div>
 
-    <div class="mt-4 d-flex gap-2">
-        <button class="btn btn-primary" type="submit">建立</button>
-        <a class="btn btn-outline-secondary" href="@Url.Action("Exams_Index")">返回列表</a>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">科別（必選）</label>
+                @Html.DropDownList("MQBClassPK",
+                    (SelectList)ViewBag.MQBClassPK,
+                    "-- 請選擇科別 --",
+                    new { @class = "form-select" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">題組（可選）</label>
+                @Html.DropDownList("MQBTeamPK",
+                    (SelectList)ViewBag.MQBTeamPK,
+                    "（不限題組）",
+                    new { @class = "form-select" })
+                <div class="form-text">若選擇題組，隨機與手動挑題都會僅從該題組挑選。</div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+            <div class="col-md-4">
+                <label class="form-label">是否隨機抽題</label><br />
+                <input type="checkbox" name="IsRandom" value="true" /> <span class="ms-1">使用隨機題</span>
+                <input type="hidden" name="IsRandom" value="false" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">抽題數量（隨機時）</label>
+                <input type="number" name="QuestionCount" value="10" min="1" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">每題分數</label>
+                <input type="number" name="ScorePerQuestion" value="1" min="0" step="0.5" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">建立</button>
+            <a class="btn btn-outline-secondary" href="@Url.Action("Exams_Index")">返回列表</a>
+        </div>
     </div>
-</div>
 }
