@@ -16,7 +16,8 @@ namespace 專題MVC修正.Models.DTOs
     {
         public int ExamId { get; set; }
         public string ExamName { get; set; }
-
+        public int ExamStdPK { get; set; }
+        public string StdName { get; set; }
         public int TotalQuestions { get; set; }
         public int CorrectCount { get; set; }
         public double? TotalScore { get; set; }

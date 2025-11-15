@@ -76,9 +76,21 @@ namespace 專題MVC修正.Controllers.Manage
             {
                 try
                 {
-                    var details = db.ExamDetail.Where(d => d.ExamID == id);
-                    if (details.Any()) db.ExamDetail.RemoveRange(details);
+                    // 1️⃣ 先刪學生作答紀錄 StdExamRec
+                    var recs = db.StdExamRec.Where(r => r.ExamID == id);
+                    if (recs.Any())
+                    {
+                        db.StdExamRec.RemoveRange(recs);
+                    }
 
+                    // 2️⃣ 再刪考卷明細 ExamDetail
+                    var details = db.ExamDetail.Where(d => d.ExamID == id);
+                    if (details.Any())
+                    {
+                        db.ExamDetail.RemoveRange(details);
+                    }
+
+                    // 3️⃣ 最後刪考卷主檔 ExamMaster
                     var exam = db.ExamMaster.FirstOrDefault(e => e.ExamID == id);
                     if (exam == null)
                     {
@@ -96,11 +108,18 @@ namespace 專題MVC修正.Controllers.Manage
                 catch (Exception ex)
                 {
                     tx.Rollback();
-                    TempData["Msg"] = "刪除失敗：" + ex.Message;
+
+                    // 4️⃣ 把真正的錯誤訊息抓出來
+                    var inner = ex.InnerException?.InnerException?.Message
+                                ?? ex.InnerException?.Message
+                                ?? ex.Message;
+
+                    TempData["Msg"] = "刪除失敗：" + inner;
                     return RedirectToAction("Exam_Index");
                 }
             }
         }
+
 
         protected override void Dispose(bool disposing)
         {

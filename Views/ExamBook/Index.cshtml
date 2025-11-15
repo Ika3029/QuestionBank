@@ -2,19 +2,26 @@
 @model IEnumerable<專題MVC修正.Models.DTOs.ExamBookSummaryVM>
 
 @{
-    ViewBag.Title = "測驗本";
+    ViewBag.Title = "測驗本總覽";
 }
 
 <div class="container py-4">
-    <h2 class="fw-bold mb-3">我的測驗本</h2>
+    <h2 class="fw-bold mb-3">測驗本總覽（全部學生）</h2>
     <p class="text-muted mb-4">
-        這裡會顯示你在系統中做過的測驗紀錄，每一列代表一次完整的測驗。
+        這裡會顯示所有學生在系統中做過的測驗紀錄，每一列代表某一位學生的一次完整測驗。
     </p>
+
+    @if (TempData["Msg"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Msg"]
+        </div>
+    }
 
     @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info">
-            目前還沒有任何測驗紀錄，可以先到「模擬考」或「單題練習」開始作答。
+            目前還沒有任何測驗紀錄。
         </div>
     }
     else
@@ -23,10 +30,13 @@
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th scope="col">學生姓名</th>
+                        <th scope="col">學生編號</th>
                         <th scope="col">測驗編號</th>
                         <th scope="col" class="text-center">題數</th>
                         <th scope="col" class="text-center">答對題數</th>
                         <th scope="col" class="text-center">成績</th>
+                        <th scope="col" class="text-center">開始時間</th>
                         <th scope="col" class="text-center">完成時間</th>
                         <th scope="col" class="text-end">操作</th>
                     </tr>
@@ -34,9 +44,15 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        var examId = item.ExamID ?? 0;                    // ExamID 可能是 null
+                        // ExamID 如果是 int? 就用 ?? 0；如果你已改成 int，可把 ?? 0 拿掉
+                        var examId = item.ExamID ?? 0;
+
                         var scoreText = item.Score.HasValue
                             ? item.Score.Value.ToString("0")
+                            : "-";
+
+                        string startTimeText = item.StartTime.HasValue
+                            ? item.StartTime.Value.ToString("yyyy/MM/dd HH:mm")
                             : "-";
 
                         string endTimeText = item.EndTime.HasValue
@@ -44,21 +60,33 @@
                             : "未完成";
 
                         <tr>
+                            <td>@item.StdName</td>
+                            <td>@item.ExamStdPK</td>
                             <td>@examId</td>
                             <td class="text-center">@item.TotalQuestions</td>
                             <td class="text-center">@item.CorrectCount</td>
                             <td class="text-center">@scoreText</td>
+                            <td class="text-center">@startTimeText</td>
                             <td class="text-center">@endTimeText</td>
                             <td class="text-end">
-                                <a href="@Url.Action("Details", "ExamBook", new { examId = examId })"
-                                   class="btn btn-outline-primary btn-sm">
+                                <a href="@Url.Action("Details", "ExamBook", new { examId = examId, stdPk = item.ExamStdPK })"
+                                   class="btn btn-outline-primary btn-sm me-1">
                                     查看明細
                                 </a>
+
+                                @using (Html.BeginForm("Delete", "ExamBook", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('確定要刪除這位學生的這次測驗紀錄嗎？');" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("examId", examId)
+                                    @Html.Hidden("stdPk", item.ExamStdPK)
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        刪除
+                                    </button>
+                                }
                             </td>
                         </tr>
                     }
                 </tbody>
-
             </table>
         </div>
     }
