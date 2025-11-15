@@ -1,0 +1,30 @@
+﻿@model 專題MVC修正.Models.DTOs.LoginVM
+
+@{
+    ViewBag.Title = "學生登入";
+}
+
+<h2>學生登入</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.StdPK, "帳號")
+        @Html.TextBoxFor(m => m.StdPK, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.StdPK, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, "密碼")
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">登入</button>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -5,6 +5,8 @@ using System.Collections.Generic; // for Dictionary<,>
 using 專題MVC修正.Models;
 using 專題MVC修正.Models.DTOs;
 using PagedList;
+using System.Data.Entity; // For Any(), Join(), etc.
+
 
 namespace 專題MVC修正.Controllers.Manage
 {
@@ -320,6 +322,22 @@ namespace 專題MVC修正.Controllers.Manage
         [HttpGet]
         public ActionResult StartExam(int id, int index = 1)
         {
+            // 先確認有沒有登入
+            if (Session["StdPK"] == null)
+            {
+                TempData["LoginError"] = "請先登入學生帳號再作答。";
+                return RedirectToAction("Index", "Home");
+            }
+
+            int stdPK = 0;
+            int.TryParse(Session["StdPK"].ToString(), out stdPK);
+
+            if (stdPK <= 0)
+            {
+                TempData["LoginError"] = "學生登入資訊有誤，請重新登入。";
+                return RedirectToAction("Index", "Home");
+            }
+
             var qList = db.Set<ExamDetail>()
                           .Where(d => d.ExamID == id)
                           .OrderBy(d => d.SortOrder)
@@ -379,6 +397,7 @@ namespace 專題MVC修正.Controllers.Manage
             return View(vm);
         }
 
+
         // 單題作答（POST）：保存選擇並導覽
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult StartExam(int examId, int mqbpk, int index, string choice, string nav)
@@ -410,7 +429,7 @@ namespace 專題MVC修正.Controllers.Manage
                          .Join(db.Set<MoodQuestionBank>(),
                                d => d.ExamMQBPK,
                                q => q.MQBPK,
-                               (d, q) => new { d.ExamDefaultScore, q.MQBPK, q.QContent, q.QAns })
+                               (d, q) => new { d.ExamDetPK, d.ExamID, d.ExamDefaultScore, q.MQBPK, q.QContent, q.QAns })
                          .ToList();
 
             int correct = 0, no = 0;
@@ -422,14 +441,71 @@ namespace 專題MVC修正.Controllers.Manage
                 ++no;
                 ansDict.TryGetValue(it.MQBPK, out var userAns);
                 var isCorrect = !string.IsNullOrWhiteSpace(userAns)
-                                && string.Equals(userAns.Trim(), (it.QAns ?? "").Trim(), StringComparison.OrdinalIgnoreCase);
+                                && string.Equals(userAns.Trim(), (it.QAns ?? "").Trim(), System.StringComparison.OrdinalIgnoreCase);
                 if (isCorrect) correct++;
 
                 detail.Add((no, userAns ?? "", it.QAns ?? "", it.QContent));
             }
 
-            // 交卷後清掉暫存；若想保留可註解
+            // 交卷後清掉「答案暫存」
             Session.Remove(key);
+
+            // ========= 這裡開始：寫入 StdExamRec =========
+
+            // 1) 從登入 Session 取得 StdPK
+            if (Session["StdPK"] == null)
+            {
+                TempData["err"] = "找不到學生登入資訊，無法寫入作答紀錄。請重新登入後再試。";
+                return RedirectToAction("Index", "Home");
+            }
+
+            int stdPK = 0;
+            int.TryParse(Session["StdPK"].ToString(), out stdPK);
+
+            // 2) 確認 Std 表中真的有這個人
+            bool stdExists = stdPK > 0 && db.Std.Any(s => s.StdPK == stdPK);
+            if (!stdExists)
+            {
+                TempData["err"] = "學生資料不存在，無法寫入作答紀錄。";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // 3) （可選）避免重複紀錄：把同一張考卷、同一學生的舊紀錄刪掉
+            var olds = db.StdExamRec.Where(r => r.ExamID == id && r.ExamStdPK == stdPK);
+            if (olds.Any())
+            {
+                db.StdExamRec.RemoveRange(olds);
+                db.SaveChanges();
+            }
+
+            // 4) 寫入每一題的紀錄
+            var now = System.DateTime.Now;
+            foreach (var it in list)
+            {
+                ansDict.TryGetValue(it.MQBPK, out var userAns);
+                var correctAns = it.QAns ?? "";
+                var isRight = string.Equals((userAns ?? "").Trim(), correctAns.Trim(), System.StringComparison.OrdinalIgnoreCase);
+
+                var rec = new StdExamRec
+                {
+                    ExamID = id,
+                    ExamDetPK = it.ExamDetPK,
+                    ExamMQBPK = it.MQBPK,
+                    ExamDefaultScore = it.ExamDefaultScore ?? 1,
+                    ExamAns = correctAns,         // 標準答案
+                    ExamStdPK = stdPK,            // 這就是 FK 指向 dbo.Std(StdPK)
+                    ExamStdAns = userAns,         // 學生答案
+                    ExamAnsST = now,              // 目前先用 now，之後要記實際作答時間再改
+                    ExamAnsET = now,
+                    ExamStdAnsRight = isRight ? "G" : "E",
+                    ExamEmotion = null
+                };
+
+                db.StdExamRec.Add(rec);
+            }
+            db.SaveChanges();
+
+            // ========= StdExamRec 寫入完成 =========
 
             var vm = new ExamRunResultVM
             {
@@ -441,5 +517,6 @@ namespace 專題MVC修正.Controllers.Manage
             };
             return View(vm);
         }
+
     }
 }

@@ -1,52 +1,304 @@
 ﻿@{
     ViewBag.Title = "首頁";
 }
-<div class="row g-4">
-    <!-- 左：Hero + 功能卡 -->
-    <div class="col-lg-8">
-        <section class="hero card-clean p-4 p-lg-5">
-            <h1 class="display-6 fw-extrabold lh-sm mb-3">
-                為學生量身打造的練習題庫
-            </h1>
-            <p class="text-secondary mb-4">
-                模擬考模式、單題練習、錯題本與個人化弱點分析，讓你在國考與課業準備上更有方向。
-            </p>
-            <div class="d-flex flex-wrap gap-3">
-                <a href="@Url.Action("Index", "Practice")" class="btn btn-primary btn-lg px-4">立即開始練習</a>
+<style>
+    .hover-card {
+        transition: all 0.25s ease;
+        cursor: pointer;
+    }
 
-                <a href="@Url.Action("Analytics","Home")" class="btn btn-outline-secondary btn-lg px-4">查看成績分析</a>
+        .hover-card:hover {
+            background: #f8faff; /* 微亮藍白 */
+            transform: translateY(-4px); /* 微浮起 */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* 漂亮陰影 */
+        }
+</style>
+<!-- 登入提示 Modal -->
+<div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="loginRequiredLabel">登入即可體驗更多內容</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <p class="text-secondary mb-0">
+                    目前僅開放已登入學生使用此功能，請先完成登入，再回來繼續操作。
+                </p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    先逛逛就好
+                </button>
+                <a class="btn btn-primary" data-bs-dismiss="modal">
+                    前往登入
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var links = document.querySelectorAll('.require-login');
+        links.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var modalEl = document.getElementById('loginRequiredModal');
+                if (modalEl && window.bootstrap) {
+                    var m = new bootstrap.Modal(modalEl);
+                    m.show();
+                }
+            });
+        });
+    });
+</script>
+
+<!-- 右側：登入 / 學生資訊卡 -->
+<div class="row g-4">
+
+    <!-- 左側：Hero + 功能卡 -->
+    <div class="col-lg-8">
+        <section class="hero card-clean p-4 p-lg-5 mb-2 mb-lg-3 shadow-sm rounded-4">
+            <h1 class="display-6 fw-bold lh-sm mb-3">
+                🎯 為學生量身打造的練習題庫
+            </h1>
+
+            <p class="text-secondary mb-4 fs-6">
+                模擬考模式、單題練習、錯題本與個人化弱點分析，
+                幫助你在國考與課業準備上更有方向，不再只是「埋頭苦背」。
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+                <a href="@Url.Action("Index", "Practice")"
+                   class="btn btn-primary btn-lg px-4 d-flex align-items-center gap-2">
+                    <span>立即開始練習</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
         </section>
 
         <div class="row g-3 mt-1">
+            <!-- 模擬考 -->
             <div class="col-md-6">
-                <div class="card-clean h-100 p-4">
-                    <a href="@Url.Action("Exams_Index", "ManageExams")" class="btn btn-primary btn-lg px-4"><h5 class="fw-bold mb-1">模擬考</h5></a>
-                    <p class="text-secondary mb-0">限時模擬真實考場。</p>
+                <div class="card-clean h-100 p-4 rounded-4 shadow-sm position-relative hover-card">
+                    <h5 class="fw-bold mb-1">模擬考</h5>
+                    <p class="text-secondary mb-0">
+                        限時模擬真實考場，提前熟悉作答節奏。
+                    </p>
+
+                    @if (Session["StdID"] != null)
+                    {
+                        <a href="@Url.Action("Exams_Index", "ManageExams")"
+                           class="stretched-link"></a>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0);"
+                           class="stretched-link require-login"></a>
+                    }
                 </div>
             </div>
+
+            <!-- 測驗本 -->
             <div class="col-md-6">
-                <div class="card-clean h-100 p-4">
-                    <h5 class="fw-bold mb-1">錯題本</h5>
-                    <p class="text-secondary mb-0">自動收集你曾答錯的題目。</p>
+                <div class="card-clean h-100 p-4 rounded-4 shadow-sm position-relative hover-card">
+                    <h5 class="fw-bold mb-1">測驗本</h5>
+                    <p class="text-secondary mb-2">
+                        自動收集你曾作答的題目，快速回顧重點。
+                    </p>
+                    <span class="badge bg-secondary-subtle text-secondary small">即將開放</span>
+
+                    @if (Session["StdID"] != null)
+                    {
+                        <a href="javascript:void(0);" class="stretched-link"></a>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0);" class="stretched-link require-login"></a>
+                    }
                 </div>
             </div>
+
+            <!-- 智能推薦 -->
             <div class="col-md-6">
-                <div class="card-clean h-100 p-4">
+                <div class="card-clean h-100 p-4 rounded-4 shadow-sm position-relative hover-card">
                     <h5 class="fw-bold mb-1">智能推薦</h5>
-                    <p class="text-secondary mb-0">依弱項推薦，加強記憶曲線。</p>
+                    <p class="text-secondary mb-0">
+                        依據錯題與答題時間，自動推薦個人化練習清單。
+                    </p>
+                    <span class="badge bg-secondary-subtle text-secondary small">即將開放</span>
+                    @if (Session["StdID"] != null)
+                    {
+                        <a href="javascript:void(0);" class="stretched-link"></a>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0);" class="stretched-link require-login"></a>
+                    }
                 </div>
             </div>
+
+            <!-- 解析深度 -->
             <div class="col-md-6">
-                <div class="card-clean h-100 p-4">
+                <div class="card-clean h-100 p-4 rounded-4 shadow-sm position-relative hover-card">
                     <h5 class="fw-bold mb-1">解析深度</h5>
-                    <p class="text-secondary mb-0">提供詳盡步驟與重點註記。</p>
+                    <p class="text-secondary mb-0">
+                        提供詳盡計算步驟與關鍵提醒，幫助真正理解題目。
+                    </p>
+                    <span class="badge bg-secondary-subtle text-secondary small">即將開放</span>
+                    @if (Session["StdID"] != null)
+                    {
+                        <a href="javascript:void(0);" class="stretched-link"></a>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0);" class="stretched-link require-login"></a>
+                    }
                 </div>
             </div>
         </div>
-
-        
     </div>
 
-   
+    <!-- 右側：登入 / 學生資訊卡（現在在同一個 row 裡） -->
+    <div class="col-lg-4">
+        @if (Session["StdID"] == null)
+        {
+            <div id="login-card" class="shadow-lg rounded-4 overflow-hidden">
+                <!-- 上方漸層 -->
+                <div class="p-3 text-white"
+                     style="background: linear-gradient(135deg, #2563eb, #22c55e);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-white bg-opacity-20 d-flex align-items-center justify-content-center"
+                             style="width:44px;height:44px;">
+                            <span class="fs-4">👩‍🎓</span>
+                        </div>
+                        <div>
+                            <div class="small text-white-50 mb-1">Student Portal</div>
+                            <h5 class="fw-bold mb-1">學生登入</h5>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 下方登入表單 -->
+                <div class="bg-light p-4">
+                    @if (TempData["LoginError"] != null)
+                    {
+                        <div class="alert alert-danger small py-2 mb-3">
+                            @TempData["LoginError"]
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">帳號</label>
+                            <input type="text"
+                                   name="StdID"
+                                   class="form-control form-control-lg"
+                                   placeholder="請輸入帳號 " />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">密碼</label>
+                            <input type="password"
+                                   name="Password"
+                                   class="form-control form-control-lg"
+                                   placeholder="請輸入密碼" />
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary btn-lg w-100 mb-2">
+                            登入開始練習
+                        </button>
+
+                        <p class="small text-muted mb-0">
+                            ※ 示範階段：帳號與密碼皆為相同的 StdID。
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="shadow-lg rounded-4 overflow-hidden">
+                <div class="p-4 text-white"
+                     style="background: linear-gradient(135deg, #22c55e, #14b8a6);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white bg-opacity-20 d-flex align-items-center justify-content-center"
+                             style="width:52px;height:52px;">
+                            <span class="fs-3">📘</span>
+                        </div>
+                        <div>
+                            <div class="small text-white-50 mb-1">學生詳細資料</div>
+                            <h5 class="fw-bold mb-1">
+                                @Session["StdName"] 同學
+                            </h5>
+                            <div class="small text-white-75">
+                                歡迎回來！今天也來多拿幾分吧！
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4">
+                    <div class="mb-3">
+                        <div class="text-secondary small mb-1">學號 StdID</div>
+                        <div class="fw-semibold">
+                            @Session["StdID"]
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-secondary small mb-1">姓名</div>
+                        <div class="fw-semibold">
+                            @Session["StdName"]
+                        </div>
+                    </div>
+
+                    @if (Session["StdDeptGradeClass"] != null)
+                    {
+                        <div class="mb-3">
+                            <div class="text-secondary small mb-1">科系 / 年級 / 班級</div>
+                            <div class="fw-semibold">
+                                @Session["StdDeptGradeClass"]
+                            </div>
+                        </div>
+                    }
+
+                    @if (Session["StdSchoolEmail"] != null)
+                    {
+                        <div class="mb-3">
+                            <div class="text-secondary small mb-1">學校 Email</div>
+                            <div class="fw-semibold">
+                                @Session["StdSchoolEmail"]
+                            </div>
+                        </div>
+                    }
+
+                    @if (Session["StdPersonalEmail"] != null)
+                    {
+                        <div class="mb-3">
+                            <div class="text-secondary small mb-1">個人 Email</div>
+                            <div class="fw-semibold">
+                                @Session["StdPersonalEmail"]
+                            </div>
+                        </div>
+                    }
+
+                    <hr class="my-3" />
+
+                    <a href="@Url.Action("Logout","Account")"
+                       class="btn btn-outline-danger w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2"
+                       style="border-radius: 10px;">
+                        <i class="bi bi-box-arrow-right"></i>
+                        登出
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
 </div>

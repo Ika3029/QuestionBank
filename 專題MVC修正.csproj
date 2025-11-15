@@ -139,6 +139,7 @@
     <Compile Include="Controllers\Manage\ManageLookupsController.cs" />
     <Compile Include="Controllers\Manage\ManageQuestionsController.cs" />
     <Compile Include="Controllers\Practice\PracticeController.cs" />
+    <Compile Include="Controllers\User\AccountController.cs" />
     <Compile Include="Controllers\User\UsersStdController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -146,6 +147,7 @@
     <Compile Include="Models\ChapterDetail.cs">
       <DependentUpon>MQBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DTOs\LoginVM.cs" />
     <Compile Include="Models\DTOs\Paging.cs" />
     <Compile Include="Models\DTOs\PracticeVM.cs" />
     <Compile Include="Models\ExamDetail.cs">
@@ -286,9 +288,11 @@
     <Content Include="Views\Practice\Single.cshtml" />
     <Content Include="Views\ManageExams\StartExam.cshtml" />
     <Content Include="Views\ManageExams\SubmitExam.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\ManageLookups\" />
+    <Folder Include="Views\NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Web.Mvc;
 using 專題MVC修正.Models;
-// 如果你的 PracticeVM 在別的命名空間，改成對的 using
 using 專題MVC修正.Models.DTOs;
 
 namespace 專題MVC修正.Controllers.User

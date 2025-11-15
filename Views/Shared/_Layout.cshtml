@@ -27,6 +27,32 @@
 </head>
 
 <body class="app-body">
+
+    <!-- 登入提示 Modal（全站共用） -->
+    <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="loginRequiredLabel">登入即可體驗更多內容</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <p class="text-secondary mb-0">
+                        目前僅開放已登入學生使用此功能，請先完成登入，再回來繼續操作。
+                    </p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        先逛逛就好
+                    </button>
+                    <a class="btn btn-primary" data-bs-dismiss="modal">
+                        前往登入
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top app-navbar">
         <div class="container">
@@ -44,29 +70,79 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainNav">
+                <!-- 左側導覽 -->
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
                         @Html.ActionLink("首頁", "Index", "Home", null, new { @class = "nav-link " + isActive("Home", "Index") })
                     </li>
                     <li class="nav-item">
-                        @* 練習：正確導向 PracticeController *@
-                        @Html.ActionLink("測驗卷", "Exams_Index", "ManageExams", null, new { @class = "nav-link " + isActive("Practice", "Index") })
+                        @Html.ActionLink("練習", "Index", "Practice", null, new { @class = "nav-link " + isActive("Practice", "Index") })
                     </li>
-                    <li class="nav-item">
-                        @Html.ActionLink("成績分析", "Analytics", "Home", null, new { @class = "nav-link " + isActive("Home", "Analytics") })
-                    </li>
-                    <li class="nav-item">
-                        @Html.ActionLink("管理後台", "Index", "Admin", null, new { @class = "nav-link " + isActive("Admin", "Index") })
-                    </li>
+
+                    <!-- ✅ 測驗卷：登入才可用，未登入叫出登入提示 Modal -->
+                    @if (Session["StdID"] != null)
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink(
+                                "測驗卷",
+                                "Exams_Index",
+                                "ManageExams",
+                                null,
+                                new { @class = "nav-link " + isActive("ManageExams", "Exams_Index") }
+                            )
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a href="javascript:void(0);" class="nav-link require-login">
+                                測驗卷
+                            </a>
+                        </li>
+                    }
+
+                    @{
+                        var admins = new[] { "T1234567", "1111410015" };
+                    }
+                    @if (Session["StdID"] != null && admins.Contains(Session["StdID"].ToString()))
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink("管理後台", "Index", "Admin", null, new { @class = "nav-link" })
+                        </li>
+                    }
                 </ul>
 
-                <div class="ms-lg-3 mt-3 mt-lg-0">
-                    @* ✅ 正確版本：導到 /Practice/Index （若有 Area 請加上 area="User"） *@
-                    <a class="btn btn-primary btn-round fw-semibold px-4"
-                       href="@Url.Action("Index", "Practice"/*, new { area = "User" }*/ )">
-                        開始練習
-                    </a>
-                </div>
+                <!-- 右側：登入狀態區 -->
+                <ul class="navbar-nav ms-lg-3 ms-auto align-items-center">
+                    @if (Session["StdID"] != null)
+                    {
+                        <li class="nav-item me-2">
+                            <div class="d-flex align-items-center px-3 py-1"
+                                 style="background:#f0f6ff; border:1px solid #d0e2ff; border-radius:12px; font-size:0.9rem;">
+                                <i class="bi bi-person-circle me-2 text-primary" style="font-size:1.1rem;"></i>
+                                <span class="text-primary fw-semibold">@Session["StdName"] 同學</span>
+                            </div>
+                        </li>
+
+                        <li class="nav-item me-3">
+                            <a href="@Url.Action("Logout", "Account")"
+                               class="btn btn-outline-danger btn-sm px-3 py-1 d-flex align-items-center gap-1"
+                               style="border-radius: 10px;">
+                                <i class="bi bi-box-arrow-right"></i> 登出
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item me-3">
+                            <a href="@Url.Action("Index","Home")#login"
+                               class="btn btn-outline-primary btn-sm px-3 py-1"
+                               style="border-radius: 10px;">
+                                學生登入
+                            </a>
+                        </li>
+                    }
+                </ul>
             </div>
         </div>
     </nav>
@@ -82,11 +158,29 @@
     <footer class="border-top">
         <div class="container py-4 small text-muted d-flex justify-content-between flex-wrap gap-2">
             <span>© @DateTime.Now.Year QuestionBank — 模擬練習平台</span>
+            <span>聯絡我們：<a href="mailto:nqbe608@gmail.com">nqbe608@gmail.com</a></span>
         </div>
     </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- ✅ 全站 require-login 事件：包括導覽列「測驗卷」與卡片 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var links = document.querySelectorAll('.require-login');
+            links.forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var modalEl = document.getElementById('loginRequiredModal');
+                    if (modalEl && window.bootstrap) {
+                        var m = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        m.show();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
