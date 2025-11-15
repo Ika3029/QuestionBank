@@ -133,6 +133,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
+    <Compile Include="Controllers\ExamBook\ExamBookController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manage\ExamHistoryController.cs" />
     <Compile Include="Controllers\Manage\ManageExamsController.cs" />
@@ -147,6 +148,8 @@
     <Compile Include="Models\ChapterDetail.cs">
       <DependentUpon>MQBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DTOs\ExamBookDetailVM.cs" />
+    <Compile Include="Models\DTOs\ExamBookSummaryVM.cs" />
     <Compile Include="Models\DTOs\LoginVM.cs" />
     <Compile Include="Models\DTOs\Paging.cs" />
     <Compile Include="Models\DTOs\PracticeVM.cs" />
@@ -289,6 +292,8 @@
     <Content Include="Views\ManageExams\StartExam.cshtml" />
     <Content Include="Views\ManageExams\SubmitExam.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\ExamBook\Index.cshtml" />
+    <Content Include="Views\ExamBook\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\ManageLookups\" />

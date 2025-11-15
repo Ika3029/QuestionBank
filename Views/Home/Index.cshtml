@@ -106,11 +106,12 @@
                     <p class="text-secondary mb-2">
                         自動收集你曾作答的題目，快速回顧重點。
                     </p>
-                    <span class="badge bg-secondary-subtle text-secondary small">即將開放</span>
+                   
 
                     @if (Session["StdID"] != null)
                     {
-                        <a href="javascript:void(0);" class="stretched-link"></a>
+                        <a href="@Url.Action("Index", "ExamBook")"
+                           class="stretched-link"></a>
                     }
                     else
                     {

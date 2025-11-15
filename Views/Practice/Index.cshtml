@@ -10,12 +10,16 @@
         <div class="alert alert-warning">@TempData["Msg"]</div>
     }
 
-    @* 這裡一定要指向動作 Single，而不是 Practice_Single *@
-    <form method="get" action="@Url.Action("Single", "Practice")">
+    <form id="practiceForm" method="get" action="@Url.Action("Single", "Practice")">
         <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label">科別 (QClass)</label>
-                @Html.DropDownList("classId", ViewBag.ClassList as SelectList, "請選擇科別", new { @class = "form-select" })
+                @Html.DropDownList(
+                    "classId",
+                    ViewBag.ClassList as SelectList,
+                    "請選擇科別",
+                    new { @class = "form-select", id = "classId" }
+                )
             </div>
             <div class="col-md-6">
                 <label class="form-label">練習模式</label>
@@ -30,3 +34,39 @@
         </div>
     </form>
 </div>
+
+<!-- ❗ 提醒用 Modal（Bootstrap 5） -->
+<div class="modal fade" id="noClassModal" tabindex="-1" aria-labelledby="noClassLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="noClassLabel">請先選擇科別</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                送出前請先從左側下拉選單選擇一個科別（QClass）。
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">知道了</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+  (function () {
+    var form = document.getElementById('practiceForm');
+    form.addEventListener('submit', function (e) {
+      var sel = document.getElementById('classId');
+      // DropDownList 的 optionLabel（"請選擇科別"）會是 value=""，這裡判斷空字串即可
+      if (!sel.value) {
+        e.preventDefault(); // 阻止送出
+        var modalEl = document.getElementById('noClassModal');
+        var modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      }
+    }, false);
+  })();
+    </script>
+}
