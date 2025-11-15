@@ -7,8 +7,9 @@
     <p class="text-secondary mb-4">請選擇要管理的項目：</p>
 
     <div class="row g-4">
+
         <!-- 題目管理 -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card-clean p-4 text-center h-100 shadow-sm border-0">
                 <div class="mb-3">
                     <i class="bi bi-journal-text" style="font-size: 2.5rem; color:#0d6efd;"></i>
@@ -20,7 +21,7 @@
         </div>
 
         <!-- 學生資料管理 -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card-clean p-4 text-center h-100 shadow-sm border-0">
                 <div class="mb-3">
                     <i class="bi bi-person-lines-fill" style="font-size: 2.5rem; color:#0d6efd;"></i>
@@ -32,7 +33,7 @@
         </div>
 
         <!-- 測驗卷管理 -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card-clean p-4 text-center h-100 shadow-sm border-0">
                 <div class="mb-3">
                     <i class="bi bi-file-earmark-text" style="font-size: 2.5rem; color:#198754;"></i>
@@ -42,5 +43,18 @@
                 <a href="@Url.Action("Exam_Index", "ExamHistory")" class="btn btn-outline-success px-4">前往測驗卷管理</a>
             </div>
         </div>
+
+        <!-- 測驗本管理 -->
+        <div class="col-md-3">
+            <div class="card-clean p-4 text-center h-100 shadow-sm border-0">
+                <div class="mb-3">
+                    <i class="bi bi-book-half" style="font-size: 2.5rem; color:#dc3545;"></i>
+                </div>
+                <h5 class="fw-bold mb-2">測驗本管理</h5>
+                <p class="text-secondary mb-3">查看所有學生的作答紀錄並管理測驗結果。</p>
+                <a href="@Url.Action("Index", "ExamBook")" class="btn btn-outline-danger px-4">前往測驗本管理</a>
+            </div>
+        </div>
+
     </div>
 </div>

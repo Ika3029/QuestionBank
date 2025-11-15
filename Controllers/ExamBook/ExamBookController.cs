@@ -11,67 +11,58 @@ namespace 專題MVC修正.Controllers.User
     {
         MQBEntities db = new MQBEntities();
 
-        private int? CurrentStdPK
-        {
-            get { return Session["StdPK"] as int?; }
-        }
-
-        private ActionResult RedirectIfNotLogin()
-        {
-            if (CurrentStdPK == null)
-            {
-                TempData["LoginError"] = "請先登入學生帳號再查看測驗本。";
-                return RedirectToAction("Index", "Home");
-            }
-            return null;
-        }
-
-        // 測驗本列表
+        // ====== 測驗本列表：顯示所有學生的紀錄 ======
         public ActionResult Index()
         {
-            var notLogin = RedirectIfNotLogin();
-            if (notLogin != null) return notLogin;
-
-            int stdPk = CurrentStdPK.Value;
-
-            var examSummary = db.StdExamRec
-                .Where(r => r.ExamStdPK == stdPk)           // ← 這裡用你 StdExamRec 裡指向 Std 的 FK
-                .GroupBy(r => r.ExamID)
-                .Select(g => new ExamBookSummaryVM
+            // StdExamRec 連接 Std，依「學生 + 考卷」分組
+            var examSummary = (
+                from r in db.StdExamRec
+                join s in db.Std on r.ExamStdPK equals s.StdPK
+                group new { r, s } by new
                 {
-                    ExamID = g.Key,
+                    r.ExamID,
+                    s.StdPK,
+                    s.StdName
+                }
+                into g
+                select new ExamBookSummaryVM
+                {
+                    ExamID = g.Key.ExamID,
+                    // 🔸 新增：學生 PK、學生姓名（記得在 VM 裡加欄位）
+                    ExamStdPK = g.Key.StdPK,
+                    StdName = g.Key.StdName,
+
                     TotalQuestions = g.Count(),
-                    CorrectCount = g.Count(x => x.ExamStdAnsRight == "E"),
-                    Score = g.Sum(x => x.ExamDefaultScore),
-                    StartTime = g.Min(x => x.ExamAnsST),
-                    EndTime = g.Max(x => x.ExamAnsET)
-                })
-                .OrderByDescending(x => x.EndTime)
-                .ToList();
+                    CorrectCount = g.Count(x => x.r.ExamStdAnsRight == "E"),
+                    Score = g.Sum(x => x.r.ExamDefaultScore),
+                    StartTime = g.Min(x => x.r.ExamAnsST),
+                    EndTime = g.Max(x => x.r.ExamAnsET)
+                }
+            )
+            .OrderByDescending(x => x.EndTime)
+            .ToList();
 
             return View(examSummary);
         }
 
-        // ⭐ 新增：單次測驗的作答明細
-        public ActionResult Details(int examId)
+        // ====== 單次測驗的作答明細（指定學生 + 考卷） ======
+        public ActionResult Details(int examId, int stdPk)
         {
-            var notLogin = RedirectIfNotLogin();
-            if (notLogin != null) return notLogin;
-
-            int stdPk = CurrentStdPK.Value;
-
             // 用 StdExamRec + MoodQuestionBank JOIN 把題目撈出來
             var list = (
                 from r in db.StdExamRec
                 join q in db.MoodQuestionBank
-                    on r.ExamMQBPK equals q.MQBPK      // ← FK：StdExamRec.ExamMQBPK → MoodQuestionBank.MQBPK
-                where r.ExamStdPK == stdPk             // 這裡用你紀錄表裡指向學生 PK 的欄位
-                   && r.ExamID == examId
+                    on r.ExamMQBPK equals q.MQBPK
+                join s in db.Std
+                    on r.ExamStdPK equals s.StdPK
+                where r.ExamStdPK == stdPk
+                      && r.ExamID == examId
                 orderby r.ExamDetPK
                 select new
                 {
-                    Rec = r,   // 作答紀錄
-                    Q = q    // 題目
+                    Rec = r,    // 作答紀錄
+                    Q = q,      // 題目
+                    S = s       // 學生
                 }
             ).ToList();
 
@@ -82,6 +73,7 @@ namespace 專題MVC修正.Controllers.User
 
             // 測驗主檔（名字）
             var exam = db.ExamMaster.FirstOrDefault(e => e.ExamID == examId);
+            var stdName = list.First().S.StdName;
 
             int totalQ = list.Count;
             int correct = list.Count(x => x.Rec.ExamStdAnsRight == "E");
@@ -96,18 +88,11 @@ namespace 專題MVC修正.Controllers.User
                 .Select((x, index) => new ExamBookDetailRowVM
                 {
                     No = index + 1,
-                    // ⭐ 題目文字：用 QContent
                     QuestionText = x.Q.QContent,
-
-                    // 學生答案，沒作答顯示「(未作答)」
                     StdAns = string.IsNullOrEmpty(x.Rec.ExamStdAns)
                                 ? "（未作答）"
                                 : x.Rec.ExamStdAns,
-
-                    // 正確答案：用 StdExamRec.ExamAns（或直接用 x.Q.QAns 也可以）
-                    CorrectAns = x.Rec.ExamAns,
-                    //CorrectAns = x.Q.QAns,
-
+                    CorrectAns = x.Rec.ExamAns,   // 或 x.Q.QAns 皆可
                     IsCorrect = x.Rec.ExamStdAnsRight == "E"
                 })
                 .ToList();
@@ -119,11 +104,35 @@ namespace 專題MVC修正.Controllers.User
                 TotalQuestions = totalQ,
                 CorrectCount = correct,
                 TotalScore = totalScore,
+                // 🔸 額外帶出學生資訊（記得在 VM 裡加欄位）
+                ExamStdPK = stdPk,
+                StdName = stdName,
                 Rows = rows
             };
 
             return View(vm);
         }
 
+        // ====== 刪除：某位學生的一次測驗紀錄 ======
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int examId, int stdPk)
+        {
+            var recs = db.StdExamRec
+                         .Where(r => r.ExamID == examId && r.ExamStdPK == stdPk)
+                         .ToList();
+
+            if (!recs.Any())
+            {
+                return HttpNotFound();
+            }
+
+            db.StdExamRec.RemoveRange(recs);
+            db.SaveChanges();
+
+            TempData["Msg"] = "已刪除該學生此次測驗紀錄。";
+
+            return RedirectToAction("Index");
+        }
     }
 }

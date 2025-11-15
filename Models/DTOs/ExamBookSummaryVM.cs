@@ -11,7 +11,8 @@ namespace 專題MVC修正.Models.DTOs
 
         public int TotalQuestions { get; set; }
         public int CorrectCount { get; set; }
-
+        public int ExamStdPK { get; set; }
+        public string StdName { get; set; }
         // ★ 修正：float? 或 double? 都可以
         public double? Score { get; set; }
 

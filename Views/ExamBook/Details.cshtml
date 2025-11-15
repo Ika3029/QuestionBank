@@ -8,34 +8,54 @@
 
     <h2 class="fw-bold mb-3">作答結果</h2>
 
+    <!-- 測驗概要 -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
-                <div>
+            <div class="row gy-3">
+
+                <!-- 測驗名稱 -->
+                <div class="col-md-4">
                     <div class="text-muted mb-1">測驗卷</div>
                     <h4 class="fw-bold mb-0">
                         @Model.ExamName
                         <small class="text-muted ms-2">(@Model.ExamId)</small>
                     </h4>
                 </div>
-                <div class="mt-3 mt-md-0 text-md-end">
+
+                <!-- 學生資訊 -->
+                <div class="col-md-4">
+                    <div class="text-muted mb-1">學生</div>
+                    <h5 class="fw-bold mb-0">
+                        @Model.StdName
+                        <small class="text-muted ms-2">(@Model.ExamStdPK)</small>
+                    </h5>
+                </div>
+
+                <!-- 題數 -->
+                <div class="col-md-1 text-md-end">
                     <div class="small text-muted">題數</div>
                     <div class="fs-5 fw-bold">@Model.TotalQuestions</div>
                 </div>
-                <div class="mt-3 mt-md-0 text-md-end">
+
+                <!-- 答對 -->
+                <div class="col-md-1 text-md-end">
                     <div class="small text-muted">答對</div>
                     <div class="fs-5 fw-bold">@Model.CorrectCount</div>
                 </div>
-                <div class="mt-3 mt-md-0 text-md-end">
+
+                <!-- 分數 -->
+                <div class="col-md-2 text-md-end">
                     <div class="small text-muted">總分</div>
                     <div class="fs-5 fw-bold">
                         @(Model.TotalScore.HasValue ? Model.TotalScore.Value.ToString("0") : "-")
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
+    <!-- 詳解 -->
     <h5 class="fw-bold mb-3">詳解</h5>
 
     <div class="table-responsive">
@@ -44,14 +64,14 @@
                 <tr>
                     <th style="width:60px;">題號</th>
                     <th>題目</th>
-                    <th style="width:120px;" class="text-center">我的答案</th>
+                    <th style="width:120px;" class="text-center">學生答案</th>
                     <th style="width:120px;" class="text-center">正確答案</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var row in Model.Rows)
                 {
-                    // 答錯顏色加深，類似你截圖那種 pink 底色
+                    // 答錯底色：紅色表格底（Bootstrap danger）
                     var rowClass = row.IsCorrect ? "" : "table-danger";
 
                     <tr class="@rowClass">
@@ -65,9 +85,11 @@
         </table>
     </div>
 
+    <!-- 返回 -->
     <div class="mt-3">
         <a href="@Url.Action("Index", "ExamBook")" class="btn btn-secondary">
-            返回我的測驗本
+            返回測驗本列表
         </a>
     </div>
+
 </div>
