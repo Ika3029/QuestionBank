@@ -1,0 +1,48 @@
+﻿@model List<專題MVC修正.Models.DTOs.MyExamDetailRowVM>
+@{
+    ViewBag.Title = "測驗明細";
+    var examId = (int)ViewBag.ExamId;
+    var finishTime = (System.DateTime)ViewBag.FinishTime;
+}
+
+<h2 class="mb-2">測驗編號 @examId 的作答明細</h2>
+<p class="text-muted mb-4">
+    完成時間：@finishTime.ToString("yyyy/MM/dd HH:mm")
+</p>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th style="width:60px;">題號</th>
+            <th>題目</th>
+            <th style="width:80px;">A</th>
+            <th style="width:80px;">B</th>
+            <th style="width:80px;">C</th>
+            <th style="width:80px;">D</th>
+            <th style="width:80px;">正確</th>
+            <th style="width:80px;">我的</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model)
+        {
+            // 答錯就用紅底（跟你截圖類似）
+            var rowClass = x.IsCorrect ? "" : "table-danger";
+
+            <tr class="@rowClass">
+                <td>@x.No</td>
+                <td>@x.QContent</td>
+                <td>@x.QOptionA</td>
+                <td>@x.QOptionB</td>
+                <td>@x.QOptionC</td>
+                <td>@x.QOptionD</td>
+                <td>@x.CorrectAns</td>
+                <td>@x.StdAns</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("MyExams", "StdExamHistory")" class="btn btn-secondary">
+    回到我的測驗本
+</a>

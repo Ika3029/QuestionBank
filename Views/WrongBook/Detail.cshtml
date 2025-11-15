@@ -1,0 +1,61 @@
+﻿@model 專題MVC修正.Models.DTOs.WrongBookDetailVM
+
+@{
+    ViewBag.Title = "錯題明細";
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-3">錯題明細</h2>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="mb-3">
+                <div class="text-muted small mb-1">題目編號 @Model.MQBPK</div>
+                <div class="fw-bold fs-5">
+                    @Model.QuestionText
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="mb-3">
+                <div class="fw-bold mb-2">選項</div>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span><strong>A.</strong> @Model.OptionA</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span><strong>B.</strong> @Model.OptionB</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span><strong>C.</strong> @Model.OptionC</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span><strong>D.</strong> @Model.OptionD</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6 mb-2">
+                    <div class="small text-muted">我的答案</div>
+                    <div class="fs-5 fw-bold">
+                        @Model.StdAns
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="small text-muted">正確答案</div>
+                    <div class="fs-5 fw-bold text-success">
+                        @Model.CorrectAns
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="@Url.Action("Index", "WrongBook")" class="btn btn-secondary">
+        返回我的錯題本
+    </a>
+</div>
+
+

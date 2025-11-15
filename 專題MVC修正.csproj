@@ -134,6 +134,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
     <Compile Include="Controllers\ExamBook\ExamBookController.cs" />
+    <Compile Include="Controllers\ExamBook\WrongBookController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manage\ExamHistoryController.cs" />
     <Compile Include="Controllers\Manage\ManageExamsController.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Controllers\Manage\ManageQuestionsController.cs" />
     <Compile Include="Controllers\Practice\PracticeController.cs" />
     <Compile Include="Controllers\User\AccountController.cs" />
+    <Compile Include="Controllers\User\StdExamHistoryController.cs" />
     <Compile Include="Controllers\User\UsersStdController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -151,8 +153,12 @@
     <Compile Include="Models\DTOs\ExamBookDetailVM.cs" />
     <Compile Include="Models\DTOs\ExamBookSummaryVM.cs" />
     <Compile Include="Models\DTOs\LoginVM.cs" />
+    <Compile Include="Models\DTOs\MyExamDetailRowVM.cs" />
+    <Compile Include="Models\DTOs\MyExamRecordVM.cs" />
     <Compile Include="Models\DTOs\Paging.cs" />
     <Compile Include="Models\DTOs\PracticeVM.cs" />
+    <Compile Include="Models\DTOs\WrongBookDetailVM.cs" />
+    <Compile Include="Models\DTOs\WrongBookItemVM.cs" />
     <Compile Include="Models\ExamDetail.cs">
       <DependentUpon>MQBModel.tt</DependentUpon>
     </Compile>
@@ -294,6 +300,10 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\ExamBook\Index.cshtml" />
     <Content Include="Views\ExamBook\Details.cshtml" />
+    <Content Include="Views\WrongBook\Index.cshtml" />
+    <Content Include="Views\WrongBook\Detail.cshtml" />
+    <Content Include="Views\StdExamHistory\MyExams.cshtml" />
+    <Content Include="Views\StdExamHistory\MyExamDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\ManageLookups\" />

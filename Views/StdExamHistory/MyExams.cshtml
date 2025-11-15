@@ -1,0 +1,42 @@
+﻿@model List<專題MVC修正.Models.DTOs.MyExamRecordVM>
+@{
+    ViewBag.Title = "我的測驗本";
+}
+
+<h2 class="mb-3">我的測驗本</h2>
+<p class="text-muted">這裡會顯示你在系統中做過的測驗紀錄，每一列代表一次完整的測驗。</p>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>測驗編號</th>
+            <th>題數</th>
+            <th>答對題數</th>
+            <th>成績</th>
+            <th>完成時間</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>@(x.ExamID ?? 0)</td>
+
+                <td>@x.TotalQuestions</td>
+                <td>@x.CorrectCount</td>
+                <td>@x.TotalScore</td>
+                <td>@x.FinishTime.ToString("yyyy/MM/dd HH:mm")</td>
+                <td>
+                    @Html.ActionLink(
+                        "查看明細",
+                        "MyExamDetail",
+                        "StdExamHistory",
+                        new { examId = x.ExamID, attemptTicks = x.AttemptTicks },
+                        new { @class = "btn btn-outline-primary btn-sm" }
+                    )
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

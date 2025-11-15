@@ -110,7 +110,7 @@
 
                     @if (Session["StdID"] != null)
                     {
-                        <a href="@Url.Action("Index", "ExamBook")"
+                        <a href="@Url.Action("MyExams", "StdExamHistory")"
                            class="stretched-link"></a>
                     }
                     else
@@ -120,17 +120,18 @@
                 </div>
             </div>
 
-            <!-- 智能推薦 -->
+            <!-- 錯題本 -->
             <div class="col-md-6">
                 <div class="card-clean h-100 p-4 rounded-4 shadow-sm position-relative hover-card">
-                    <h5 class="fw-bold mb-1">智能推薦</h5>
+                    <h5 class="fw-bold mb-1">錯題本</h5>
                     <p class="text-secondary mb-0">
-                        依據錯題與答題時間，自動推薦個人化練習清單。
+                        整理你曾經答錯的題目，集中練習更有效率。
                     </p>
-                    <span class="badge bg-secondary-subtle text-secondary small">即將開放</span>
+                    
                     @if (Session["StdID"] != null)
                     {
-                        <a href="javascript:void(0);" class="stretched-link"></a>
+                        <a href="@Url.Action("Index", "WrongBook")"
+                           class="stretched-link"></a>
                     }
                     else
                     {

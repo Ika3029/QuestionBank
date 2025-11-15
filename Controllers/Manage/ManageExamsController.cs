@@ -23,7 +23,7 @@ namespace 專題MVC修正.Controllers.Manage
             return View(data);
         }
 
-        // ====== 建卷（GET）— 科別 & 題組 下拉 ======
+        // ====== 建卷（GET） ======
         [HttpGet]
         public ActionResult Exams_Create()
         {
@@ -38,12 +38,12 @@ namespace 專題MVC修正.Controllers.Manage
             return View();
         }
 
-        // ====== 建卷（POST）— 依「科別 + 題組(可選)」做隨機或進手動挑題 ======
+        // ====== 建卷（POST） ======
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Exams_Create(
             string ExamName,
-            int MQBClassPK,          // 必選：科別
-            int? MQBTeamPK,          // 可選：題組
+            int MQBClassPK,          // 必選
+            int? MQBTeamPK,          // 可選
             bool IsRandom,
             int QuestionCount = 10,
             double ScorePerQuestion = 1
@@ -77,7 +77,7 @@ namespace 專題MVC修正.Controllers.Manage
 
             if (IsRandom)
             {
-                // 依「科別 + 題組(可選)」過濾後抽題
+                // 過濾後抽題
                 var qset = db.Set<MoodQuestionBank>().Where(q => q.QClass == MQBClassPK);
                 if (MQBTeamPK.HasValue) qset = qset.Where(q => q.MQBTeamPK == MQBTeamPK.Value);
 
@@ -104,22 +104,22 @@ namespace 專題MVC修正.Controllers.Manage
                 return RedirectToAction("Exams_Index");
             }
 
-            // 手動挑題：把科別 & 題組條件帶過去
+            // 手動挑題
             return RedirectToAction("SelectQuestions", new
             {
                 id = em.ExamID,
                 qclass = MQBClassPK,
-                team = MQBTeamPK,     // 可能為 null，沒關係
+                team = MQBTeamPK,     
                 score = ScorePerQuestion
             });
         }
 
-        // ====== 手動挑題（GET）— 以「科別 + 題組」篩選 + 分頁 + 顯示中文科別/題組 ======
+        // ====== 手動挑題（GET） ======
         [HttpGet]
         public ActionResult SelectQuestions(
             int id,
             int? qclass = null,
-            int? team = null,           // 題組(MQBTeamPK)
+            int? team = null,           
             int? qtype = null,
             int? chapter = null,
             int? session = null,
@@ -132,7 +132,7 @@ namespace 專題MVC修正.Controllers.Manage
             ViewBag.ExamMasterPK = id;
             ViewBag.ScorePerQuestion = score;
 
-            // 下拉來源：依目前的 qclass / team 先過濾
+            // 下拉來源
             var baseQ = db.Set<MoodQuestionBank>().AsQueryable();
             if (qclass.HasValue) baseQ = baseQ.Where(x => x.QClass == qclass.Value);
             if (team.HasValue) baseQ = baseQ.Where(x => x.MQBTeamPK == team.Value);
@@ -172,7 +172,7 @@ namespace 專題MVC修正.Controllers.Manage
             ViewBag.Session = session;
             ViewBag.Keyword = keyword;
 
-            // 主查詢：JOIN 科別；題組用 LEFT JOIN
+            // 主查詢
             var query = from q in db.Set<MoodQuestionBank>()
                         join c in db.Set<MQBClassName>() on q.QClass equals c.MQBClassPK
                         join t0 in db.Set<MQBTeam>() on q.MQBTeamPK equals t0.MQBTeamPK into tj
@@ -196,7 +196,7 @@ namespace 專題MVC修正.Controllers.Manage
                     MQBClassPK = x.q.QClass,
                     MQBClassName1 = x.c.MQBClassName1,
 
-                    // 題組（注意：q.MQBTeamPK 是 int，不要用 HasValue/Value）
+                    // 題組
                     MQBTeamPK = x.q.MQBTeamPK,
                     MQBTeamContent = x.t != null ? x.t.MQBTeamContent : null,
                     MQBTeamYN = x.t != null ? x.t.MQBTeamYN : null,
@@ -220,7 +220,7 @@ namespace 專題MVC修正.Controllers.Manage
         }
 
 
-        // ====== 手動挑題（POST）— 加入所選題目 ======
+        // ====== 手動挑題（POST） ======
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult SelectQuestions(int examMasterPK, double scorePerQuestion, int[] selectedQIds)
         {
@@ -250,7 +250,7 @@ namespace 專題MVC修正.Controllers.Manage
             return RedirectToAction("Details", new { id = examMasterPK });
         }
 
-        // ====== 明細（顯示已加入的題目） ======
+        // ====== 明細 ======
         public ActionResult Details(int id)
         {
             var exam = db.Set<ExamMaster>().Find(id);
@@ -470,14 +470,7 @@ namespace 專題MVC修正.Controllers.Manage
                 return RedirectToAction("Index", "Home");
             }
 
-            // 3) （可選）避免重複紀錄：把同一張考卷、同一學生的舊紀錄刪掉
-            var olds = db.StdExamRec.Where(r => r.ExamID == id && r.ExamStdPK == stdPK);
-            if (olds.Any())
-            {
-                db.StdExamRec.RemoveRange(olds);
-                db.SaveChanges();
-            }
-
+            
             // 4) 寫入每一題的紀錄
             var now = System.DateTime.Now;
             foreach (var it in list)
