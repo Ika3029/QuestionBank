@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using 專題MVC修正.Models;
 using 專題MVC修正.Models.DTOs;
+using PagedList;   // ★ 分頁用
 
 namespace 專題MVC修正.Controllers.User
 {
@@ -31,7 +32,8 @@ namespace 專題MVC修正.Controllers.User
         }
 
         // GET: /User/WrongBook
-        public ActionResult Index()
+        // ★ 已加入分頁參數
+        public ActionResult Index(int page = 1, int pageSize = 10)
         {
             var notLogin = RedirectIfNotLogin();
             if (notLogin != null) return notLogin;
@@ -52,7 +54,7 @@ namespace 專題MVC修正.Controllers.User
             ).ToList();   // 先拉到記憶體，下面用 .NET 功能
 
             // 2. 以題目分組，只保留「至少有一筆答錯紀錄」的題目
-            var result = raw
+            var query = raw
                 .GroupBy(x => x.Q.MQBPK)
                 .Where(g => g.Any(x => x.Rec.ExamStdAnsRight == "E")) // ★ 曾經錯過就留下
                 .Select(g =>
@@ -71,7 +73,7 @@ namespace 專題MVC修正.Controllers.User
                         MQBPK = g.Key,
                         QuestionText = latest.Q.QContent,
 
-                        // 列表上想看「最後一次作答的答案」
+                        // 列表上顯示「最後一次作答的答案」
                         StdAns = string.IsNullOrEmpty(latest.Rec.ExamStdAns)
                                     ? "（未作答）"
                                     : latest.Rec.ExamStdAns,
@@ -88,10 +90,12 @@ namespace 專題MVC修正.Controllers.User
                         LastAnsTime = latest.Rec.ExamAnsET
                     };
                 })
-                .OrderByDescending(x => x.LastAnsTime)
-                .ToList();
+                .OrderByDescending(x => x.LastAnsTime);
 
-            return View(result);
+            // ★ 這裡做分頁
+            var model = query.ToPagedList(page, pageSize);
+
+            return View(model);
         }
 
         // 單題詳情
