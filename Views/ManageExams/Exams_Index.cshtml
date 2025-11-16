@@ -1,6 +1,4 @@
-﻿
-
-@using PagedList.Mvc
+﻿@using PagedList.Mvc
 @using PagedList
 @model IPagedList<專題MVC修正.Models.ExamMaster>
 @{
@@ -47,3 +45,10 @@ else
         @Html.PagedListPager(Model, p => Url.Action("Exams_Index", new { page = p }))
     </div>
 }
+
+<!-- ⭐ 右下角回到首頁 -->
+<div class="mt-4 text-end">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+        回到首頁
+    </a>
+</div>

@@ -11,11 +11,12 @@ namespace 專題MVC修正.Models.DTOs
 
         public int TotalQuestions { get; set; }
         public int CorrectCount { get; set; }
-        public int ExamStdPK { get; set; }
+        public int? ExamStdPK { get; set; }
         public string StdName { get; set; }
         // ★ 修正：float? 或 double? 都可以
         public double? Score { get; set; }
-
+        // ★ 新增：這次作答的識別碼
+        public long AttemptTicks { get; set; }
         // ★ 修正：允許為 null
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }

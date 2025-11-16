@@ -26,43 +26,43 @@
 
                 @* ⬇⬇ 一定要指向 Single *@
                 @using (Html.BeginForm("Single", "Practice", FormMethod.Post))
-                {   @Html.AntiForgeryToken()
-                    @Html.HiddenFor(m => m.MQBPK)
-                    @Html.HiddenFor(m => m.ClassId)
-                    @Html.HiddenFor(m => m.ClassName)
+                {@Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.MQBPK)
+                @Html.HiddenFor(m => m.ClassId)
+                @Html.HiddenFor(m => m.ClassName)
 
-                    <div class="mt-3">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" id="optA" name="SelectedAnswer" value="A" @(Model.IsAnswered ? "disabled" : "") />
-                            <label class="form-check-label" for="optA"><strong>A.</strong> @Model.OptionA</label>
-                            @if (has(Model.ImgOptionADataUrl))
-                            {<div><img src="@Model.ImgOptionADataUrl" class="img-fluid mt-1" /></div>}
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" id="optB" name="SelectedAnswer" value="B" @(Model.IsAnswered ? "disabled" : "") />
-                            <label class="form-check-label" for="optB"><strong>B.</strong> @Model.OptionB</label>
-                            @if (has(Model.ImgOptionBDataUrl))
-                            {<div><img src="@Model.ImgOptionBDataUrl" class="img-fluid mt-1" /></div>}
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" id="optC" name="SelectedAnswer" value="C" @(Model.IsAnswered ? "disabled" : "") />
-                            <label class="form-check-label" for="optC"><strong>C.</strong> @Model.OptionC</label>
-                            @if (has(Model.ImgOptionCDataUrl))
-                            {<div><img src="@Model.ImgOptionCDataUrl" class="img-fluid mt-1" /></div>}
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" id="optD" name="SelectedAnswer" value="D" @(Model.IsAnswered ? "disabled" : "") />
-                            <label class="form-check-label" for="optD"><strong>D.</strong> @Model.OptionD</label>
-                            @if (has(Model.ImgOptionDDataUrl))
-                            {<div><img src="@Model.ImgOptionDDataUrl" class="img-fluid mt-1" /></div>}
-                        </div>
+                <div class="mt-3">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" id="optA" name="SelectedAnswer" value="A" @(Model.IsAnswered ? "disabled" : "") />
+                        <label class="form-check-label" for="optA"><strong>A.</strong> @Model.OptionA</label>
+                        @if (has(Model.ImgOptionADataUrl))
+                        {<div><img src="@Model.ImgOptionADataUrl" class="img-fluid mt-1" /></div>}
                     </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" id="optB" name="SelectedAnswer" value="B" @(Model.IsAnswered ? "disabled" : "") />
+                        <label class="form-check-label" for="optB"><strong>B.</strong> @Model.OptionB</label>
+                        @if (has(Model.ImgOptionBDataUrl))
+                        {<div><img src="@Model.ImgOptionBDataUrl" class="img-fluid mt-1" /></div>}
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" id="optC" name="SelectedAnswer" value="C" @(Model.IsAnswered ? "disabled" : "") />
+                        <label class="form-check-label" for="optC"><strong>C.</strong> @Model.OptionC</label>
+                        @if (has(Model.ImgOptionCDataUrl))
+                        {<div><img src="@Model.ImgOptionCDataUrl" class="img-fluid mt-1" /></div>}
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" id="optD" name="SelectedAnswer" value="D" @(Model.IsAnswered ? "disabled" : "") />
+                        <label class="form-check-label" for="optD"><strong>D.</strong> @Model.OptionD</label>
+                        @if (has(Model.ImgOptionDDataUrl))
+                        {<div><img src="@Model.ImgOptionDDataUrl" class="img-fluid mt-1" /></div>}
+                    </div>
+                </div>
 
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary" @(Model.IsAnswered ? "disabled" : "")>提交答案</button>
-                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary ms-2">回條件</a>
-                    </div>
-                }
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary" @(Model.IsAnswered ? "disabled" : "")>提交答案</button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary ms-2">回條件</a>
+                </div>
+            }
 
                 @if (Model.IsAnswered)
                 {
@@ -102,5 +102,13 @@
                 </form>
             </div>
         </div>
+    </div>
+    <!-- 返回 -->
+
+    <div class="mt-3 d-flex gap-2">
+
+        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary">
+            回到首頁
+        </a>
     </div>
 </div>

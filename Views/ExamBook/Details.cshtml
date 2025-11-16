@@ -47,7 +47,9 @@
                 <div class="col-md-2 text-md-end">
                     <div class="small text-muted">總分</div>
                     <div class="fs-5 fw-bold">
-                        @(Model.TotalScore.HasValue ? Model.TotalScore.Value.ToString("0") : "-")
+                        @(Model.TotalScore.HasValue
+                              ? Model.TotalScore.Value.ToString("0")
+                              : "-")
                     </div>
                 </div>
 
@@ -69,16 +71,26 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var row in Model.Rows)
+                @if (Model.Rows != null && Model.Rows.Any())
                 {
-                    // 答錯底色：紅色表格底（Bootstrap danger）
-                    var rowClass = row.IsCorrect ? "" : "table-danger";
+                    foreach (var row in Model.Rows)
+                    {
+                        var rowClass = row.IsCorrect ? "" : "table-danger";
 
-                    <tr class="@rowClass">
-                        <td>@row.No</td>
-                        <td>@row.QuestionText</td>
-                        <td class="text-center">@row.StdAns</td>
-                        <td class="text-center">@row.CorrectAns</td>
+                        <tr class="@rowClass">
+                            <td>@row.No</td>
+                            <td>@row.QuestionText</td>
+                            <td class="text-center">@row.StdAns</td>
+                            <td class="text-center">@row.CorrectAns</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            尚無題目紀錄。
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -86,10 +98,16 @@
     </div>
 
     <!-- 返回 -->
-    <div class="mt-3">
+    
+    <div class="mt-3 d-flex gap-2">
         <a href="@Url.Action("Index", "ExamBook")" class="btn btn-secondary">
             返回測驗本列表
         </a>
+
+        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary">
+            回到首頁
+        </a>
     </div>
 
-</div>
+</div> <!-- container end -->
+

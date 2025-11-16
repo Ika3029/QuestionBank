@@ -1,13 +1,20 @@
-@model IEnumerable<±MÃDMVC­×¥¿.Models.ExamMaster>
+ï»¿@model IEnumerable<å°ˆé¡ŒMVCä¿®æ­£.Models.ExamMaster>
 @{
-    ViewBag.Title = "´úÅç¨÷²M³æ";
+    ViewBag.Title = "æ¸¬é©—å·æ¸…å–®";
     int page = ViewBag.Page ?? 1;
     int pageSize = ViewBag.PageSize ?? 10;
     int total = ViewBag.TotalCount ?? 0;
     int totalPages = (int)Math.Ceiling((double)total / pageSize);
 }
 
-<h2 class="fw-bold mb-3">´úÅç¨÷²M³æ</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-3">æ¸¬é©—å·æ¸…å–®</h2>
+
+    <!-- â­ å³ä¸Šè§’ï¼šå›é¦–é  -->
+    <a href="@Url.Action("Index", "Admin")" class="btn btn-secondary">
+        å›ç®¡ç†å¾Œå°
+    </a>
+</div>
 
 @if (TempData["Msg"] != null)
 {
@@ -15,20 +22,20 @@
 }
 
 <form method="get" class="mb-3 d-flex">
-    <input type="text" name="keyword" class="form-control me-2" placeholder="·j´M´úÅç¦WºÙ..."
+    <input type="text" name="keyword" class="form-control me-2" placeholder="æœå°‹æ¸¬é©—åç¨±..."
            value="@ViewBag.Keyword" style="max-width:250px;" />
-    <button type="submit" class="btn btn-primary">·j´M</button>
+    <button type="submit" class="btn btn-primary">æœå°‹</button>
 </form>
 
 <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
         <tr>
             <th>ExamID</th>
-            <th>´úÅç¦WºÙ</th>
-            <th>¶}©l®É¶¡</th>
-            <th>µ²§ô®É¶¡</th>
-            <th>®Éªø(¤À)</th>
-            <th style="width:180px;">¾Ş§@</th>
+            <th>æ¸¬é©—åç¨±</th>
+            <th>é–‹å§‹æ™‚é–“</th>
+            <th>çµæŸæ™‚é–“</th>
+            <th>æ™‚é•·(åˆ†)</th>
+            <th style="width:180px;">æ“ä½œ</th>
         </tr>
     </thead>
     <tbody>
@@ -39,11 +46,10 @@
                 <td>@x.ExamName</td>
                 <td>@x.ExamSDate.ToString("yyyy/MM/dd HH:mm")</td>
                 <td>@x.ExamEDate.ToString("yyyy/MM/dd HH:mm")</td>
-                <!-- ª`·N¡GÄæ¦ì¦WºÙ¬O ExamDuraionTime¡]¸ê®Æ®w«÷¦r¦p¦¹¡^ -->
                 <td>@x.ExamDuraionTime</td>
                 <td>
                     @Html.ActionLink(
-                        linkText: "¸Ô²Ó",
+                        linkText: "è©³ç´°",
                         actionName: "Exam_Details",
                         controllerName: "ExamHistory",
                         routeValues: new { id = x.ExamID },
@@ -53,8 +59,8 @@
                     {
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-sm btn-danger"
-                                onclick="return confirm('½T©w­n§R°£³o¥÷¦Ò¨÷¡]ID=@x.ExamID¡^¶Ü¡H¦¹°Ê§@µLªk´_­ì¡C');">
-                            §R°£
+                                onclick="return confirm('ç¢ºå®šè¦åˆªé™¤é€™ä»½è€ƒå·ï¼ˆID=@x.ExamIDï¼‰å—ï¼Ÿæ­¤å‹•ä½œç„¡æ³•å¾©åŸã€‚');">
+                            åˆªé™¤
                         </button>
                     }
                 </td>

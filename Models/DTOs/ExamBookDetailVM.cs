@@ -21,7 +21,7 @@ namespace 專題MVC修正.Models.DTOs
         public int TotalQuestions { get; set; }
         public int CorrectCount { get; set; }
         public double? TotalScore { get; set; }
-
+        public long AttemptTicks { get; set; }   // ★ 新增
         public IList<ExamBookDetailRowVM> Rows { get; set; }
     }
 }
