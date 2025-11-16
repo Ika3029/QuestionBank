@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using 專題MVC修正.Models;
 using 專題MVC修正.Models.DTOs;
+using PagedList;   // ★ 分頁用
 
 namespace 專題MVC修正.Controllers.User
 {
@@ -11,9 +12,9 @@ namespace 專題MVC修正.Controllers.User
     {
         private readonly MQBEntities db = new MQBEntities();
 
-        // 我的測驗本（每一列 = 一次完整測驗）
+        // 我的測驗本（每一列 = 一次完整測驗）＋ 分頁
         [HttpGet]
-        public ActionResult MyExams()
+        public ActionResult MyExams(int page = 1, int pageSize = 10)
         {
             if (Session["StdPK"] == null)
             {
@@ -28,8 +29,8 @@ namespace 專題MVC修正.Controllers.User
                          .Where(r => r.ExamStdPK == stdPK)
                          .GroupBy(r => new
                          {
-                             r.ExamID,        // int?
-                             r.ExamAnsET      // DateTime?
+                             r.ExamID,   // int?
+                             r.ExamAnsET // DateTime?
                          })
                          .Select(g => new
                          {
@@ -38,14 +39,13 @@ namespace 專題MVC修正.Controllers.User
                              TotalQuestions = g.Count(),
                              CorrectCount = g.Count(x => x.ExamStdAnsRight == "G"),
                              TotalScore = g
-    .Where(x => x.ExamStdAnsRight == "G")                 // 只挑答對的題目
-    .Sum(x => (double?)(x.ExamDefaultScore ?? 0)) ?? 0,    // 把答對題目的配分加總
-
+                                 .Where(x => x.ExamStdAnsRight == "G")                 // 只挑答對的題目
+                                 .Sum(x => (double?)(x.ExamDefaultScore ?? 0)) ?? 0    // 把答對題目的配分加總
                          })
-                         .ToList();   // ← 先撈回記憶體，後面就變成 LINQ to Objects 了
+                         .ToList();   // ← 先撈回記憶體，後面就變成 LINQ to Objects
 
             // 再在記憶體裡組成 ViewModel，這裡就可以用 Ticks、DateTime.MinValue 等 .NET 功能
-            var list = temp
+            var query = temp
                 .Select(x => new MyExamRecordVM
                 {
                     ExamID = x.ExamID ?? 0,                                  // int? -> int
@@ -55,12 +55,13 @@ namespace 專題MVC修正.Controllers.User
                     FinishTime = x.FinishTime ?? DateTime.MinValue,
                     AttemptTicks = (x.FinishTime ?? DateTime.MinValue).Ticks // 這裡才用 Ticks
                 })
-                .OrderByDescending(x => x.FinishTime)
-                .ToList();
+                .OrderByDescending(x => x.FinishTime);
 
-            return View(list);
+            // ★ 這裡改成回傳分頁結果
+            var pagedList = query.ToPagedList(page, pageSize);
+
+            return View(pagedList);
         }
-
 
         // 單次測驗詳情：ExamID + AttemptTicks (完成時間)
         [HttpGet]
@@ -101,25 +102,25 @@ namespace 專題MVC修正.Controllers.User
 
             // 再轉成 ViewModel（這裡用純 .NET，可以用 Trim、Equals 等）
             var list = temp
-    .Select((x, idx) => new MyExamDetailRowVM
-    {
-        No = idx + 1,
-        ExamDetPK = x.ExamDetPK ?? 0,     // ★ 修正 int? → int
-        Score = x.ExamDefaultScore ?? 0,
-        QContent = x.QContent,
-        QOptionA = x.QOptionA,
-        QOptionB = x.QOptionB,
-        QOptionC = x.QOptionC,
-        QOptionD = x.QOptionD,
-        CorrectAns = x.ExamAns,
-        StdAns = x.ExamStdAns,
-        IsCorrect = !string.IsNullOrWhiteSpace(x.ExamStdAns)
-                    && string.Equals(
-                           x.ExamStdAns.Trim(),
-                           (x.ExamAns ?? "").Trim(),
-                           StringComparison.OrdinalIgnoreCase)
-    })
-    .ToList();
+                .Select((x, idx) => new MyExamDetailRowVM
+                {
+                    No = idx + 1,
+                    ExamDetPK = x.ExamDetPK ?? 0,     // int? → int
+                    Score = x.ExamDefaultScore ?? 0,
+                    QContent = x.QContent,
+                    QOptionA = x.QOptionA,
+                    QOptionB = x.QOptionB,
+                    QOptionC = x.QOptionC,
+                    QOptionD = x.QOptionD,
+                    CorrectAns = x.ExamAns,
+                    StdAns = x.ExamStdAns,
+                    IsCorrect = !string.IsNullOrWhiteSpace(x.ExamStdAns)
+                                && string.Equals(
+                                       x.ExamStdAns.Trim(),
+                                       (x.ExamAns ?? "").Trim(),
+                                       StringComparison.OrdinalIgnoreCase)
+                })
+                .ToList();
 
             ViewBag.ExamId = examId;
             ViewBag.FinishTime = finishTime;
@@ -128,5 +129,3 @@ namespace 專題MVC修正.Controllers.User
         }
     }
 }
-
-
