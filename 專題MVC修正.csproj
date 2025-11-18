@@ -152,6 +152,7 @@
     </Compile>
     <Compile Include="Models\DTOs\ExamBookDetailVM.cs" />
     <Compile Include="Models\DTOs\ExamBookSummaryVM.cs" />
+    <Compile Include="Models\DTOs\ExamReportVM.cs" />
     <Compile Include="Models\DTOs\LoginVM.cs" />
     <Compile Include="Models\DTOs\MyExamDetailRowVM.cs" />
     <Compile Include="Models\DTOs\MyExamRecordVM.cs" />

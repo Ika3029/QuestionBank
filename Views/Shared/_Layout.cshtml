@@ -27,7 +27,101 @@
 </head>
 
 <body class="app-body">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
+            // ========= 先抓一次 Modal 實例 =========
+            var modalEl = document.getElementById('loginRequiredModal');
+            var loginModal = null;
+            if (modalEl && window.bootstrap) {
+                loginModal = new bootstrap.Modal(modalEl);
+            }
+
+            // ========= 處理需要登入才可用的連結 =========
+            var links = document.querySelectorAll('.require-login');
+            links.forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (loginModal) {
+                        loginModal.show();
+                    }
+                });
+            });
+
+            // ========= 處理「前往登入」按鈕 =========
+            var goLoginBtn = document.getElementById('go-login-btn');
+            if (goLoginBtn) {
+                goLoginBtn.addEventListener('click', function (e) {
+                    e.preventDefault(); // 不要觸發預設 anchor 行為
+
+                    // 1️⃣ 關掉 Modal
+                    if (loginModal) {
+                        loginModal.hide();
+                    }
+
+                    // 2️⃣ 安全清掉 body 的狀態 & backdrop（避免遮罩卡住）
+                    document.body.classList.remove('modal-open');
+                    var backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(function (bd) {
+                        bd.remove();
+                    });
+
+                    // 3️⃣ 捲動 + 閃動登入卡片
+                    var loginCard = document.getElementById('login-card');
+                    if (!loginCard) return;
+
+                    // 稍微等一下，確定動畫結束
+                    setTimeout(function () {
+                        loginCard.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+
+                        loginCard.classList.add('login-highlight');
+
+                        setTimeout(function () {
+                            loginCard.classList.remove('login-highlight');
+                        }, 1500);
+                    }, 200);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .hover-card {
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+            .hover-card:hover {
+                background: #f8faff; /* 微亮藍白 */
+                transform: translateY(-4px); /* 微浮起 */
+                box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* 漂亮陰影 */
+            }
+        /* ✅ 登入卡片被引導時的閃動效果 */
+        #login-card.login-highlight {
+            animation: login-flash 0.6s ease-in-out 0s 2;
+        }
+
+        /* Razor 裡要寫 @@keyframes */
+        @@keyframes login-flash {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(37, 99, 235, 0);
+            }
+
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.4);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+    </style>
     <!-- 登入提示 Modal（全站共用） -->
     <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -45,11 +139,13 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                         先逛逛就好
                     </button>
-                    <a href="@Url.Action("Index","Home")#login-card"
-                       class="btn btn-primary"
-                       data-bs-dismiss="modal">
+                    <a href="#login-card"
+                       id="go-login-btn"
+                       class="btn btn-primary">
                         前往登入
                     </a>
+
+
 
                 </div>
             </div>
