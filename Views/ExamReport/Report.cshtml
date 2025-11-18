@@ -4,97 +4,102 @@
 }
 
 
-<div class="container py-4">
-    <h2 class="fw-bold mb-3">📘 測驗結果報告 — 測驗編號 @Model.ExamID</h2>
-</div>
-   
-    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+<div class="container py-4 position-relative">
+
+    <!-- 右上角的回首頁按鈕 -->
+    <a href="@Url.Action("Index", "Home")"
+       class="btn btn-secondary position-absolute"
+       style="top: 10px; right: 15px;">
         回首頁
     </a>
 
+    <h2 class="fw-bold mb-3">📘 測驗結果報告 — 測驗編號 @Model.ExamID</h2>
+</div>
 
-    <div class="card p-4 mb-4 shadow-sm">
-        <h4 class="fw-bold">🎯 整體成績</h4>
-        <p class="mb-1">題目總數：@Model.TotalQuestions 題</p>
-        <p class="mb-1">答對題數：@Model.CorrectCount 題</p>
-        <p class="mb-1">正確率：<b>@Model.Accuracy.ToString("0.0")%</b></p>
-    </div>
 
-    <!-- 科別正確率 -->
-    <div class="card p-4 mb-4 shadow-sm">
-        <h4 class="fw-bold">📊 各科別正確率</h4>
-        <canvas id="classChart" height="120"></canvas>
-    </div>
 
-    <!-- 題組正確率 -->
-    <div class="card p-4 mb-4 shadow-sm">
-        <h4 class="fw-bold">📚 各題組正確率</h4>
-        <canvas id="teamChart" height="120"></canvas>
-    </div>
+<div class="card p-4 mb-4 shadow-sm">
+    <h4 class="fw-bold">🎯 整體成績</h4>
+    <p class="mb-1">題目總數：@Model.TotalQuestions 題</p>
+    <p class="mb-1">答對題數：@Model.CorrectCount 題</p>
+    <p class="mb-1">正確率：<b>@Model.Accuracy.ToString("0.0")%</b></p>
+</div>
 
-    <!-- 錯題清單 -->
-    <div class="card p-4 shadow-sm">
-        <h4 class="fw-bold">❌ 錯題列表</h4>
+<!-- 科別正確率 -->
+<div class="card p-4 mb-4 shadow-sm">
+    <h4 class="fw-bold">📊 各科別正確率</h4>
+    <canvas id="classChart" height="120"></canvas>
+</div>
 
-        @if (!Model.WrongQuestionList.Any())
-        {
-            <p class="text-success">你太強了！本次測驗沒有錯題 🎉</p>
-        }
-        else
-        {
-            <ul class="mb-3">
-                @foreach (var id in Model.WrongQuestionList)
+<!-- 題組正確率 -->
+<div class="card p-4 mb-4 shadow-sm">
+    <h4 class="fw-bold">📚 各題組正確率</h4>
+    <canvas id="teamChart" height="120"></canvas>
+</div>
+
+<!-- 錯題清單 -->
+<div class="card p-4 shadow-sm">
+    <h4 class="fw-bold">❌ 錯題列表</h4>
+
+    @if (!Model.WrongQuestionList.Any())
+    {
+        <p class="text-success">你太強了！本次測驗沒有錯題 🎉</p>
+    }
+    else
+    {
+        <ul class="mb-3">
+            @foreach (var id in Model.WrongQuestionList)
+            {
+                <li>
+                    題目 @id
+                    <a href="@Url.Action("Detail", "WrongBook", new { mqbpk = id, examId = Model.ExamID })"
+                       class="ms-2">查看解析</a>
+                </li>
+            }
+        </ul>
+
+        <!-- 分頁按鈕 -->
+
+        int page = (int)ViewBag.Page;
+        int pageSize = (int)ViewBag.PageSize;
+        int total = (int)ViewBag.TotalItems;
+        int totalPages = (int)Math.Ceiling(total / (double)pageSize);
+
+        <nav>
+            <ul class="pagination">
+
+                <!-- 上一頁 -->
+                <li class="page-item @(page <= 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("Report", new { examId = Model.ExamID, page = page - 1 })">
+                        上一頁
+                    </a>
+                </li>
+
+                <!-- 頁碼 -->
+                @for (int i = 1; i <= totalPages; i++)
                 {
-                    <li>
-                        題目 @id
-                        <a href="@Url.Action("Detail", "WrongBook", new { mqbpk = id, examId = Model.ExamID })"
-                           class="ms-2">查看解析</a>
+                    <li class="page-item @(i == page ? "active" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("Report", new { examId = Model.ExamID, page = i })">
+                            @i
+                        </a>
                     </li>
                 }
+
+                <!-- 下一頁 -->
+                <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("Report", new { examId = Model.ExamID, page = page + 1 })">
+                        下一頁
+                    </a>
+                </li>
+
             </ul>
+        </nav>
 
-            <!-- 分頁按鈕 -->
-
-            int page = (int)ViewBag.Page;
-            int pageSize = (int)ViewBag.PageSize;
-            int total = (int)ViewBag.TotalItems;
-            int totalPages = (int)Math.Ceiling(total / (double)pageSize);
-
-            <nav>
-                <ul class="pagination">
-
-                    <!-- 上一頁 -->
-                    <li class="page-item @(page <= 1 ? "disabled" : "")">
-                        <a class="page-link"
-                           href="@Url.Action("Report", new { examId = Model.ExamID, page = page - 1 })">
-                            上一頁
-                        </a>
-                    </li>
-
-                    <!-- 頁碼 -->
-                    @for (int i = 1; i <= totalPages; i++)
-                    {
-                        <li class="page-item @(i == page ? "active" : "")">
-                            <a class="page-link"
-                               href="@Url.Action("Report", new { examId = Model.ExamID, page = i })">
-                                @i
-                            </a>
-                        </li>
-                    }
-
-                    <!-- 下一頁 -->
-                    <li class="page-item @(page >= totalPages ? "disabled" : "")">
-                        <a class="page-link"
-                           href="@Url.Action("Report", new { examId = Model.ExamID, page = page + 1 })">
-                            下一頁
-                        </a>
-                    </li>
-
-                </ul>
-            </nav>
-
-        }
-    </div>
+    }
+</div>
 
 
 

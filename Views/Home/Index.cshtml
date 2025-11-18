@@ -38,14 +38,22 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        // ========= 先抓一次 Modal 實例 =========
+        // ========= 先取得 Modal 元素 & 只建立一次實例 =========
         var modalEl = document.getElementById('loginRequiredModal');
         var loginModal = null;
+
         if (modalEl && window.bootstrap) {
             loginModal = new bootstrap.Modal(modalEl);
+
+            // ⭐ 不管用哪一個按鈕關閉，只要 Modal 關掉就把遮罩/狀態清乾淨
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                document.body.classList.remove('modal-open');
+                var backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(function (bd) { bd.remove(); });
+            });
         }
 
-        // ========= 處理需要登入才可用的連結 =========
+        // ========= 點「需要登入」的卡片 → 打開提示視窗 =========
         var links = document.querySelectorAll('.require-login');
         links.forEach(function (link) {
             link.addEventListener('click', function (e) {
@@ -56,29 +64,19 @@
             });
         });
 
-        // ========= 處理「前往登入」按鈕 =========
+        // ========= 點「前往登入」 → 關掉 Modal + 捲到登入卡片 + 閃動 =========
         var goLoginBtn = document.getElementById('go-login-btn');
         if (goLoginBtn) {
             goLoginBtn.addEventListener('click', function (e) {
-                e.preventDefault(); // 不要觸發預設 anchor 行為
+                e.preventDefault(); // 不要讓 a 自己跳錨點
 
-                // 1️⃣ 關掉 Modal
                 if (loginModal) {
-                    loginModal.hide();
+                    loginModal.hide(); // 會觸發 hidden.bs.modal，順便清遮罩
                 }
 
-                // 2️⃣ 安全清掉 body 的狀態 & backdrop（避免遮罩卡住）
-                document.body.classList.remove('modal-open');
-                var backdrops = document.querySelectorAll('.modal-backdrop');
-                backdrops.forEach(function (bd) {
-                    bd.remove();
-                });
-
-                // 3️⃣ 捲動 + 閃動登入卡片
                 var loginCard = document.getElementById('login-card');
                 if (!loginCard) return;
 
-                // 稍微等一下，確定動畫結束
                 setTimeout(function () {
                     loginCard.scrollIntoView({
                         behavior: 'smooth',
@@ -95,6 +93,7 @@
         }
     });
 </script>
+
 
 
 
@@ -224,7 +223,7 @@
                     <p class="text-secondary mb-0">
                         提供測驗後的成績報告與統計圖表，幫助你快速看懂自己的強弱項。
                     </p>
-                    
+
 
                     @if (Session["StdID"] != null)
                     {
