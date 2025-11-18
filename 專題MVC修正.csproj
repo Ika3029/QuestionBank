@@ -134,6 +134,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
     <Compile Include="Controllers\ExamBook\ExamBookController.cs" />
+    <Compile Include="Controllers\ExamBook\ExamReportController.cs" />
     <Compile Include="Controllers\ExamBook\WrongBookController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manage\ExamHistoryController.cs" />
@@ -305,6 +306,7 @@
     <Content Include="Views\WrongBook\Detail.cshtml" />
     <Content Include="Views\StdExamHistory\MyExams.cshtml" />
     <Content Include="Views\StdExamHistory\MyExamDetail.cshtml" />
+    <Content Include="Views\ExamReport\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\ManageLookups\" />

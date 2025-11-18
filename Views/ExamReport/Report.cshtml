@@ -1,0 +1,146 @@
+﻿@model 專題MVC修正.Models.DTOs.ExamReportVM
+@{
+    ViewBag.Title = "測驗結果報告";
+}
+
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-3">📘 測驗結果報告 — 測驗編號 @Model.ExamID</h2>
+</div>
+   
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+        回首頁
+    </a>
+
+
+    <div class="card p-4 mb-4 shadow-sm">
+        <h4 class="fw-bold">🎯 整體成績</h4>
+        <p class="mb-1">題目總數：@Model.TotalQuestions 題</p>
+        <p class="mb-1">答對題數：@Model.CorrectCount 題</p>
+        <p class="mb-1">正確率：<b>@Model.Accuracy.ToString("0.0")%</b></p>
+    </div>
+
+    <!-- 科別正確率 -->
+    <div class="card p-4 mb-4 shadow-sm">
+        <h4 class="fw-bold">📊 各科別正確率</h4>
+        <canvas id="classChart" height="120"></canvas>
+    </div>
+
+    <!-- 題組正確率 -->
+    <div class="card p-4 mb-4 shadow-sm">
+        <h4 class="fw-bold">📚 各題組正確率</h4>
+        <canvas id="teamChart" height="120"></canvas>
+    </div>
+
+    <!-- 錯題清單 -->
+    <div class="card p-4 shadow-sm">
+        <h4 class="fw-bold">❌ 錯題列表</h4>
+
+        @if (!Model.WrongQuestionList.Any())
+        {
+            <p class="text-success">你太強了！本次測驗沒有錯題 🎉</p>
+        }
+        else
+        {
+            <ul class="mb-3">
+                @foreach (var id in Model.WrongQuestionList)
+                {
+                    <li>
+                        題目 @id
+                        <a href="@Url.Action("Detail", "WrongBook", new { mqbpk = id, examId = Model.ExamID })"
+                           class="ms-2">查看解析</a>
+                    </li>
+                }
+            </ul>
+
+            <!-- 分頁按鈕 -->
+
+            int page = (int)ViewBag.Page;
+            int pageSize = (int)ViewBag.PageSize;
+            int total = (int)ViewBag.TotalItems;
+            int totalPages = (int)Math.Ceiling(total / (double)pageSize);
+
+            <nav>
+                <ul class="pagination">
+
+                    <!-- 上一頁 -->
+                    <li class="page-item @(page <= 1 ? "disabled" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("Report", new { examId = Model.ExamID, page = page - 1 })">
+                            上一頁
+                        </a>
+                    </li>
+
+                    <!-- 頁碼 -->
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == page ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("Report", new { examId = Model.ExamID, page = i })">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    <!-- 下一頁 -->
+                    <li class="page-item @(page >= totalPages ? "disabled" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("Report", new { examId = Model.ExamID, page = page + 1 })">
+                            下一頁
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        }
+    </div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // 科別圖表
+    var classLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ClassTotal.Keys));
+    var classCorrect = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ClassCorrect.Values));
+    var classTotal = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ClassTotal.Values));
+
+    var ctx = document.getElementById("classChart");
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: classLabels,
+            datasets: [{
+                label: '正確題數',
+                data: classCorrect,
+            },
+            {
+                label: '題目總數',
+                data: classTotal,
+            }]
+        }
+    });
+
+    // 題組圖表
+    var teamLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TeamTotal.Keys));
+    var teamCorrect = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TeamCorrect.Values));
+    var teamTotal = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TeamTotal.Values));
+
+    var ctx2 = document.getElementById("teamChart");
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: teamLabels,
+            datasets: [{
+                label: '正確題數',
+                data: teamCorrect,
+            },
+            {
+                label: '題目總數',
+                data: teamTotal,
+            }]
+        }
+    });
+</script>

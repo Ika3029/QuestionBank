@@ -99,7 +99,8 @@ namespace 專題MVC修正.Controllers.User
         }
 
         // 單題詳情
-        public ActionResult Detail(int mqbpk)
+        public ActionResult Detail(int mqbpk, int examId)
+
         {
             var notLogin = RedirectIfNotLogin();
             if (notLogin != null) return notLogin;
@@ -144,7 +145,7 @@ namespace 專題MVC修正.Controllers.User
                 // 正解：優先用 ExamAns，沒有就用題庫 QAns
                 CorrectAns = string.IsNullOrEmpty(rec.ExamAns) ? q.QAns : rec.ExamAns
             };
-
+            ViewBag.ExamID = examId;
             return View(vm);
         }
     }

@@ -56,6 +56,12 @@
     <a href="@Url.Action("Index", "WrongBook")" class="btn btn-secondary">
         返回我的錯題本
     </a>
+
+    <a href="@Url.Action("Report", "ExamReport", new { examId = ViewBag.ExamID })"
+       class="btn btn-primary ms-2">
+        返回成績報告
+    </a>
+
 </div>
 
 

@@ -221,20 +221,24 @@
             <div class="col-md-6">
                 <div class="card-clean h-100 p-4 rounded-4 shadow-sm position-relative hover-card">
                     <h5 class="fw-bold mb-1">解析深度</h5>
-    <p class="text-secondary mb-0">
-        提供詳盡計算步驟與關鍵提醒，幫助真正理解題目。
-    </p>
-                    <span class="badge bg-secondary-subtle text-secondary small">即將開放</span>
+                    <p class="text-secondary mb-0">
+                        提供測驗後的成績報告與統計圖表，幫助你快速看懂自己的強弱項。
+                    </p>
+                    
+
                     @if (Session["StdID"] != null)
                     {
-                        <a href="javascript:void(0);" class="stretched-link"></a>
+                        @* 登入狀態：連到目前學生最近一次測驗的報告 *@
+                        <a href="@Url.Action("Latest", "ExamReport")" class="stretched-link"></a>
                     }
                     else
                     {
+                        @* 未登入照舊，交給 require-login 的 JS 跳登入 *@
                         <a href="javascript:void(0);" class="stretched-link require-login"></a>
                     }
                 </div>
             </div>
+
         </div>
     </div>
 
