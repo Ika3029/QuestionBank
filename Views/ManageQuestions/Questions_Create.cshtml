@@ -10,20 +10,7 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <!-- 題組 -->
-    <div class="form-group">
-        <label>題組：</label>
-        <div class="input-group">
-            @Html.DropDownListFor(m => m.MQBTeamPK,
-                (SelectList)ViewBag.MQBTeamPK,
-                "請選擇",
-                new { @class = "form-control", id = "MQBTeamPK" })
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="button" id="btnAddTeam">+ 新增題組</button>
-            </span>
-        </div>
-        @Html.ValidationMessageFor(m => m.MQBTeamPK, "", new { @class = "text-danger" })
-    </div>
+
 
     <!-- 分類 -->
     <div class="form-group">
@@ -39,6 +26,22 @@
         </div>
         @Html.ValidationMessageFor(m => m.QClass, "", new { @class = "text-danger" })
     </div>
+
+    <!-- 題組 -->
+    <div class="form-group">
+        <label>題組：</label>
+        <div class="input-group">
+            @Html.DropDownListFor(m => m.MQBTeamPK,
+                (SelectList)ViewBag.MQBTeamPK,
+                "請選擇",
+                new { @class = "form-control", id = "MQBTeamPK" })
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="btnAddTeam">+ 新增題組</button>
+            </span>
+        </div>
+        @Html.ValidationMessageFor(m => m.MQBTeamPK, "", new { @class = "text-danger" })
+    </div>
+
 
     <div class="form-group">
         <label>題型(QType)：</label>
@@ -66,24 +69,32 @@
 
 @section scripts{
     <script>
-    // 題組：即時新增
+    // 題組：即時新增（綁定目前選到的 QClass）
     $("#btnAddTeam").on("click", function () {
         var name = prompt("請輸入新的題組名稱：");
         if (!name) return;
 
-        $.post("@Url.Action("AddTeam","ManageQuestions")", { name: name })
+        var classId = $("#QClass").val();
+        if (!classId) {
+            alert("請先在『類別(QClass)』下拉選單選擇一個分類，再新增題組。");
+            return;
+        }
+
+        $.post("@Url.Action("AddTeam","ManageLookups")",
+            { name: name, mqbClassPk: classId })
             .done(function (res) {
                 if (res.ok) {
-                    // 追加到下拉並選取
                     $("#MQBTeamPK").append(
                         $("<option>", { value: res.id, text: res.text, selected: true })
-                    ).trigger("change");
+                    );
                     alert("已新增題組：" + res.text);
                 } else {
                     alert(res.err || "新增失敗");
                 }
             })
-            .fail(function () { alert("連線失敗，請稍後再試"); });
+            .fail(function () {
+                alert("連線失敗，請稍後再試");
+            });
     });
 
     // 分類：即時新增
@@ -91,18 +102,22 @@
         var name = prompt("請輸入新的分類名稱：");
         if (!name) return;
 
-        $.post("@Url.Action("AddClass", "ManageQuestions")", { name: name })
+        $.post("@Url.Action("AddClass", "ManageLookups")", { name: name })
             .done(function (res) {
                 if (res.ok) {
                     $("#QClass").append(
                         $("<option>", { value: res.id, text: res.text, selected: true })
-                    ).trigger("change");
+                    );
                     alert("已新增分類：" + res.text);
                 } else {
                     alert(res.err || "新增失敗");
                 }
             })
-            .fail(function () { alert("連線失敗，請稍後再試"); });
+            .fail(function () {
+                alert("連線失敗，請稍後再試");
+            });
     });
     </script>
 }
+
+

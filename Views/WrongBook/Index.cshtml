@@ -55,9 +55,13 @@
                             </td>
 
                             <td class="text-end">
-                                <a href="@Url.Action("Detail", "WrongBook", new { mqbpk = item.MQBPK })"
-                                   class="btn btn-outline-primary btn-sm">明細</a>
+                                <a href="@Url.Action("Detail", "WrongBook",
+             new { examId = item.ExamID, mqbpk = item.MQBPK })"
+                                   class="btn btn-outline-primary btn-sm">
+                                    明細
+                                </a>
                             </td>
+
                         </tr>
                     }
                 </tbody>

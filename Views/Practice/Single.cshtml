@@ -75,13 +75,13 @@
                         else
                         { <p class="text-danger fw-bold">❌ 答錯了</p>}
 
-                        <div class="mt-2">
-                            <p><strong>解析：</strong>@Model.Explanation</p>
-                            @if (has(Model.ImgExplanationDataUrl))
-                            {
-                                <div><img src="@Model.ImgExplanationDataUrl" class="img-fluid mt-1" /></div>
-                            }
-                        </div>
+                    <div class="mt-2">
+                        <!-- <p><strong>解析：</strong>@Model.Explanation</p>-->
+                        @if (has(Model.ImgExplanationDataUrl))
+                        {
+                            <div><img src="@Model.ImgExplanationDataUrl" class="img-fluid mt-1" /></div>
+                        }
+                    </div>
 
                         <a class="btn btn-success mt-3" href="@Url.Action("Single", new { classId = Model.ClassId })">下一題</a>
                     </div>
