@@ -13,5 +13,6 @@ namespace 專題MVC修正.Models.DTOs
         public string CorrectAns { get; set; }      // 正確答案
         public int WrongCount { get; set; }         // 錯了幾次
         public DateTime? LastAnsTime { get; set; }  // 最後作答時間
+        public int ExamID { get; set; }
     }
 }
