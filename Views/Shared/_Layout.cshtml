@@ -168,7 +168,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainNav">
-                <!-- 左側導覽 -->
+                
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
                         @Html.ActionLink("首頁", "Index", "Home", null, new { @class = "nav-link " + isActive("Home", "Index") })
@@ -177,7 +177,7 @@
                         @Html.ActionLink("練習", "Index", "Practice", null, new { @class = "nav-link " + isActive("Practice", "Index") })
                     </li>
 
-                    <!-- 測驗卷：登入才可用，未登入叫出登入提示 -->
+                    <!-- 測驗卷 -->
                     @if (Session["StdID"] != null)
                     {
                         <li class="nav-item">
@@ -210,7 +210,7 @@
                     }
                 </ul>
 
-                <!-- 右側：登入狀態區 -->
+                
                 <ul class="navbar-nav ms-lg-3 ms-auto align-items-center">
                     @if (Session["StdID"] != null)
                     {

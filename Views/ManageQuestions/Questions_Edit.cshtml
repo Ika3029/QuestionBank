@@ -77,7 +77,7 @@
 
 @section scripts{
     <script>
-    // 題組：用 prompt() 新增
+    // 題組
     $("#btnAddTeam").on("click", function () {
         var name = prompt("請輸入新的題組名稱：");
         if (!name) return;
@@ -96,7 +96,7 @@
             .fail(function () { alert("連線失敗，請稍後再試。"); });
     });
 
-    // 分類：用 prompt() 新增
+    // 分類
     $("#btnAddClass").on("click", function () {
         var name = prompt("請輸入新的分類名稱：");
         if (!name) return;

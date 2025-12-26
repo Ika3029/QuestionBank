@@ -12,7 +12,7 @@
 
 <div class="container py-4">
 
-    <!-- ✅ 標題 + 右上角回管理後台 -->
+    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold mb-0">測驗本總覽（全部學生）</h2>
 
@@ -32,7 +32,7 @@
         </div>
     }
 
-    <!-- 🔍 簡潔版搜尋列（像你截圖那樣） -->
+    
     <div class="mb-3" style="max-width: 420px;">
         @using (Html.BeginForm("Index", "ExamBook", FormMethod.Get, new { @class = "d-flex" }))
         {
@@ -159,7 +159,7 @@
                     @:
                 }
 
-                @* 若總頁數超過 10，顯示「…」與 下一頁 / 最後一頁 *@
+                
                 @if (totalPages > displayCount)
                 {
                     @:···
