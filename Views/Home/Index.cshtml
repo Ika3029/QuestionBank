@@ -8,16 +8,16 @@
     }
 
         .hover-card:hover {
-            background: #f8faff; /* 微亮藍白 */
-            transform: translateY(-4px); /* 微浮起 */
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* 漂亮陰影 */
+            background: #f8faff; 
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
         }
-    /* ✅ 登入卡片被引導時的閃動效果 */
+    
     #login-card.login-highlight {
         animation: login-flash 0.6s ease-in-out 0s 2;
     }
 
-    /* Razor 裡要寫 @@keyframes */
+    
     @@keyframes login-flash {
         0% {
             transform: scale(1);
@@ -38,14 +38,14 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        // ========= 先取得 Modal 元素 & 只建立一次實例 =========
+        
         var modalEl = document.getElementById('loginRequiredModal');
         var loginModal = null;
 
         if (modalEl && window.bootstrap) {
             loginModal = new bootstrap.Modal(modalEl);
 
-            // ⭐ 不管用哪一個按鈕關閉，只要 Modal 關掉就把遮罩/狀態清乾淨
+            
             modalEl.addEventListener('hidden.bs.modal', function () {
                 document.body.classList.remove('modal-open');
                 var backdrops = document.querySelectorAll('.modal-backdrop');
@@ -53,7 +53,7 @@
             });
         }
 
-        // ========= 點「需要登入」的卡片 → 打開提示視窗 =========
+        
         var links = document.querySelectorAll('.require-login');
         links.forEach(function (link) {
             link.addEventListener('click', function (e) {
@@ -64,14 +64,14 @@
             });
         });
 
-        // ========= 點「前往登入」 → 關掉 Modal + 捲到登入卡片 + 閃動 =========
+        
         var goLoginBtn = document.getElementById('go-login-btn');
         if (goLoginBtn) {
             goLoginBtn.addEventListener('click', function (e) {
-                e.preventDefault(); // 不要讓 a 自己跳錨點
+                e.preventDefault(); 
 
                 if (loginModal) {
-                    loginModal.hide(); // 會觸發 hidden.bs.modal，順便清遮罩
+                    loginModal.hide(); 
                 }
 
                 var loginCard = document.getElementById('login-card');
@@ -97,7 +97,7 @@
 
 
 
-<!-- 登入提示 Modal -->
+
 <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4">
@@ -129,10 +129,10 @@
 </div>
 
 
-<!-- 右側：登入 / 學生資訊卡 -->
+
 <div class="row g-4">
 
-    <!-- 左側：Hero + 功能卡 -->
+    
     <div class="col-lg-8">
         <section class="hero card-clean p-4 p-lg-5 mb-2 mb-lg-3 shadow-sm rounded-4">
             <h1 class="display-6 fw-bold lh-sm mb-3">
@@ -241,7 +241,7 @@
         </div>
     </div>
 
-    <!-- 右側：登入 / 學生資訊卡（現在在同一個 row 裡） -->
+    <!-- 右側：登入  -->
     <div class="col-lg-4">
         @if (Session["StdID"] == null)
         {
