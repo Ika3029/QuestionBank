@@ -11,10 +11,10 @@ namespace 專題MVC修正.Controllers.User
     {
         MQBEntities db = new MQBEntities();
 
-        // ====== 測驗本列表：帶搜尋 + 分頁 ======
+        //  測驗本列表
         public ActionResult Index(string keyword, int page = 1, int pageSize = 10)
         {
-            // 先做 grouping：一位學生對同一張考卷的一次作答 = 一筆紀錄
+            
             var query = from r in db.StdExamRec
                         join s in db.Std on r.ExamStdPK equals s.StdPK
                         group new { r, s } by new
@@ -22,7 +22,7 @@ namespace 專題MVC修正.Controllers.User
                             r.ExamID,
                             r.ExamStdPK,
                             s.StdName,
-                            r.ExamAnsST      // 用開始作答時間當作「這次作答」的識別
+                            r.ExamAnsST      
                         }
                 into g
                         select new ExamBookSummaryVM
@@ -35,18 +35,18 @@ namespace 專題MVC修正.Controllers.User
                             // G = 答對
                             CorrectCount = g.Count(x => x.r.ExamStdAnsRight == "G"),
 
-                            // 只算答對題目的分數
+                            // 只算答對題目
                             Score = g.Where(x => x.r.ExamStdAnsRight == "G")
                                      .Sum(x => (double?)x.r.ExamDefaultScore) ?? 0,
 
                             StartTime = g.Key.ExamAnsST,
                             EndTime = g.Max(x => x.r.ExamAnsET),
 
-                            // 這裡先不算 Ticks，避免 EF 爆炸；等拉到記憶體再算
+                            
                             AttemptTicks = 0
                         };
 
-            // 關鍵字搜尋（這裡先用學生姓名 + 測驗編號）
+            // 關鍵字搜尋
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 query = query.Where(x =>
@@ -55,17 +55,17 @@ namespace 專題MVC修正.Controllers.User
                 );
             }
 
-            // 總筆數
+            
             int totalItems = query.Count();
 
-            // 排序 + 分頁（仍然在資料庫做）
+            
             var pageQuery = query
                 .OrderByDescending(x => x.EndTime)
                 .ThenByDescending(x => x.ExamID)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
 
-            // 先把這一頁拉到記憶體，再補上 AttemptTicks
+            
             var list = pageQuery.ToList();
 
             foreach (var x in list)
@@ -87,11 +87,11 @@ namespace 專題MVC修正.Controllers.User
             return View(model);
         }
 
-        // ====== 某一次作答的明細（一定要帶 attemptTicks） ======
+       
         [HttpGet]
         public ActionResult Details(int examId, int stdPk, long attemptTicks)
         {
-            // 用 ticks 還原出 DateTime，拿來比對 ExamAnsST
+            
             DateTime attemptTime = new DateTime(attemptTicks);
 
             var list = (
@@ -103,7 +103,7 @@ namespace 專題MVC修正.Controllers.User
                 where r.ExamID == examId
                       && r.ExamStdPK == stdPk
                       && r.ExamAnsST.HasValue
-                      && r.ExamAnsST.Value == attemptTime   // 這裡不再用 Ticks
+                      && r.ExamAnsST.Value == attemptTime   
                 orderby r.ExamDetPK
                 select new
                 {
@@ -115,7 +115,7 @@ namespace 專題MVC修正.Controllers.User
 
             if (!list.Any())
             {
-                return HttpNotFound();   // 沒有這次作答紀錄
+                return HttpNotFound();   
             }
 
             // 測驗主檔（名稱）
@@ -161,7 +161,7 @@ namespace 專題MVC修正.Controllers.User
             return View(vm);
         }
 
-        // ====== 刪除：某位學生的一次測驗紀錄 ======
+        //  刪除
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int examId, int stdPk, long attemptTicks)

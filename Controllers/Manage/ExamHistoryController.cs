@@ -11,8 +11,7 @@ namespace 專題MVC修正.Controllers.Manage
     {
         private readonly MQBEntities db = new MQBEntities();
 
-        // GET: /Manage/ExamHistory
-        // 加入搜尋 + 分頁
+        
         public ActionResult Exam_Index(string keyword, int page = 1, int pageSize = 10)
         {
             var query = db.ExamMaster.AsQueryable();
@@ -37,7 +36,7 @@ namespace 專題MVC修正.Controllers.Manage
             return View(list);
         }
 
-        // GET: /Manage/ExamHistory/Details/5
+        
         public ActionResult Exam_Details(int id)
         {
             var exam = db.ExamMaster.FirstOrDefault(e => e.ExamID == id);
@@ -67,7 +66,7 @@ namespace 專題MVC修正.Controllers.Manage
             return View(vm);
         }
 
-        // POST: /Manage/ExamHistory/Delete/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Exam_Delete(int id)
@@ -76,21 +75,21 @@ namespace 專題MVC修正.Controllers.Manage
             {
                 try
                 {
-                    // 1️⃣ 先刪學生作答紀錄 StdExamRec
+                    
                     var recs = db.StdExamRec.Where(r => r.ExamID == id);
                     if (recs.Any())
                     {
                         db.StdExamRec.RemoveRange(recs);
                     }
 
-                    // 2️⃣ 再刪考卷明細 ExamDetail
+                    
                     var details = db.ExamDetail.Where(d => d.ExamID == id);
                     if (details.Any())
                     {
                         db.ExamDetail.RemoveRange(details);
                     }
 
-                    // 3️⃣ 最後刪考卷主檔 ExamMaster
+                    
                     var exam = db.ExamMaster.FirstOrDefault(e => e.ExamID == id);
                     if (exam == null)
                     {
@@ -109,7 +108,7 @@ namespace 專題MVC修正.Controllers.Manage
                 {
                     tx.Rollback();
 
-                    // 4️⃣ 把真正的錯誤訊息抓出來
+                    
                     var inner = ex.InnerException?.InnerException?.Message
                                 ?? ex.InnerException?.Message
                                 ?? ex.Message;

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using 專題MVC修正.Models;
 using 專題MVC修正.Models.DTOs;
-using PagedList;   // ★ 分頁用
+using PagedList;   
 
 namespace 專題MVC修正.Controllers.User
 {
@@ -11,7 +11,7 @@ namespace 專題MVC修正.Controllers.User
     {
         private readonly MQBEntities db = new MQBEntities();
 
-        // 目前登入學生的 StdPK
+        
         private int? CurrentStdPK
         {
             get
@@ -31,8 +31,7 @@ namespace 專題MVC修正.Controllers.User
             return null;
         }
 
-        // GET: /User/WrongBook
-        // ★ 已加入分頁參數
+        
         public ActionResult Index(int page = 1, int pageSize = 10)
         {
             var notLogin = RedirectIfNotLogin();
@@ -40,7 +39,7 @@ namespace 專題MVC修正.Controllers.User
 
             int stdPk = CurrentStdPK.Value;
 
-            // 1. 先撈出這位學生所有作答紀錄 + 題目（對 + 錯 都要）
+            
             var raw = (
                 from r in db.StdExamRec
                 join q in db.MoodQuestionBank
@@ -51,18 +50,18 @@ namespace 專題MVC修正.Controllers.User
                     Rec = r,
                     Q = q
                 }
-            ).ToList();   // 先拉到記憶體，下面用 .NET 功能
+            ).ToList();   
 
-            // 2. 以題目分組，只保留「至少有一筆答錯紀錄」的題目
+            
             var query = raw
                 .GroupBy(x => x.Q.MQBPK)
-                .Where(g => g.Any(x => x.Rec.ExamStdAnsRight == "E")) // ★ 曾經錯過就留下
+                .Where(g => g.Any(x => x.Rec.ExamStdAnsRight == "E")) 
                 .Select(g =>
                 {
-                    // 最新的一次作答（可能是對也可能是錯）
+                    
                     var latest = g.OrderByDescending(x => x.Rec.ExamAnsET).FirstOrDefault();
 
-                    // 最新的一次「錯誤」作答（顯示在錯題詳情時用得到）
+                    
                     var latestWrong = g
                         .Where(x => x.Rec.ExamStdAnsRight == "E")
                         .OrderByDescending(x => x.Rec.ExamAnsET)
@@ -73,32 +72,32 @@ namespace 專題MVC修正.Controllers.User
                         MQBPK = g.Key,
                         QuestionText = latest.Q.QContent,
 
-                        // 列表上顯示「最後一次作答的答案」
+                        
                         StdAns = string.IsNullOrEmpty(latest.Rec.ExamStdAns)
                                     ? "（未作答）"
                                     : latest.Rec.ExamStdAns,
 
-                        // 正解：優先用紀錄裡的 ExamAns，沒有就用題庫 QAns
+                        
                         CorrectAns = string.IsNullOrEmpty(latest.Rec.ExamAns)
                                         ? latest.Q.QAns
                                         : latest.Rec.ExamAns,
 
-                        // 這題總共錯幾次
+                        
                         WrongCount = g.Count(x => x.Rec.ExamStdAnsRight == "E"),
 
-                        // 顯示最後作答時間（不論正確與否）
+                        
                         LastAnsTime = latest.Rec.ExamAnsET
                     };
                 })
                 .OrderByDescending(x => x.LastAnsTime);
 
-            // ★ 這裡做分頁
+            
             var model = query.ToPagedList(page, pageSize);
 
             return View(model);
         }
 
-        // 單題詳情
+        
         public ActionResult Detail(int mqbpk, int examId)
 
         {
@@ -107,21 +106,21 @@ namespace 專題MVC修正.Controllers.User
 
             int stdPk = CurrentStdPK.Value;
 
-            // 撈出這位學生這一題「答錯」的紀錄中，最後一次作答
+            
             var rec = db.StdExamRec
                 .Where(r => r.ExamStdPK == stdPk
                             && r.ExamMQBPK == mqbpk
-                            && r.ExamStdAnsRight == "E") // 只看錯題
+                            && r.ExamStdAnsRight == "E") 
                 .OrderByDescending(r => r.ExamAnsET)
                 .FirstOrDefault();
 
             if (rec == null)
             {
-                // 理論上不會發生，因為 Index 已經確認「曾經錯過」
+                
                 return HttpNotFound();
             }
 
-            // 題目內容
+            
             var q = db.MoodQuestionBank.FirstOrDefault(x => x.MQBPK == mqbpk);
             if (q == null)
             {
@@ -142,7 +141,7 @@ namespace 專題MVC修正.Controllers.User
                             ? "（未作答）"
                             : rec.ExamStdAns,
 
-                // 正解：優先用 ExamAns，沒有就用題庫 QAns
+                
                 CorrectAns = string.IsNullOrEmpty(rec.ExamAns) ? q.QAns : rec.ExamAns
             };
             ViewBag.ExamID = examId;

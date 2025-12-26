@@ -13,14 +13,14 @@ namespace 專題MVC修正.Controllers
 
         public ActionResult Report(int examId, int page = 1, int pageSize = 10)
         {
-            // 這個報告是給「學生本人」看的，所以要看 Session
+            
             if (Session["StdID"] == null)
             {
-                // 沒登入就丟回首頁或登入頁
+                
                 return RedirectToAction("Index", "Home");
             }
 
-            // 1. 先從 Session 的學號找出 StdPK
+            
             string stdId = Session["StdID"].ToString();
 
             var stdPk = db.Std
@@ -34,7 +34,7 @@ namespace 專題MVC修正.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 2. 用 ExamID + StdPK 去抓「這位學生」在這次測驗的紀錄
+            
             var data = (from rec in db.StdExamRec
                         join q in db.MoodQuestionBank
                             on rec.ExamMQBPK equals q.MQBPK
@@ -43,7 +43,7 @@ namespace 專題MVC修正.Controllers
                         join cls in db.MQBClassName
                             on q.QClass equals cls.MQBClassPK
                         where rec.ExamID == examId
-                           && rec.ExamStdPK == stdPk      // ⭐ 關鍵：只算這個學生
+                           && rec.ExamStdPK == stdPk      
                         select new
                         {
                             rec.ExamStdAnsRight,
@@ -77,7 +77,7 @@ namespace 專題MVC修正.Controllers
                 .GroupBy(x => x.TeamName)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            // 錯題列表（全部）
+            // 錯題列表
             var wrongListAll = data
                 .Where(x => x.ExamStdAnsRight != "G")
                 .Select(x => x.ExamMQBPK)
@@ -85,11 +85,11 @@ namespace 專題MVC修正.Controllers
 
             // 分頁後的錯題
             var wrongListPaged = wrongListAll
-            .OrderBy(x => x)     // 按題號排序
+            .OrderBy(x => x)     
                 .Paginate(page, pageSize)
                 .ToList();
 
-            // ViewModel 給 View 顯示
+            
             var vm = new ExamReportVM
             {
                 ExamID = examId,
@@ -102,10 +102,10 @@ namespace 專題MVC修正.Controllers
                 TeamCorrect = teamCorrect,
                 TeamTotal = teamTotal,
 
-                WrongQuestionList = wrongListPaged,   // 改這裡
+                WrongQuestionList = wrongListPaged,   
             };
 
-            // 送給 View 的分頁資訊
+            
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = wrongListAll.Count();
@@ -116,16 +116,16 @@ namespace 專題MVC修正.Controllers
 
         public ActionResult Latest()
         {
-            // 沒登入就回首頁
+            
             if (Session["StdID"] == null)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            // Session 存的是學號（字串）
+            
             string stdId = Session["StdID"].ToString();
 
-            // 先找到這個學生對應的 StdPK
+            
             var stdPk = db.Std
                           .Where(s => s.StdID == stdId)
                           .Select(s => s.StdPK)
@@ -137,10 +137,10 @@ namespace 專題MVC修正.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 用 StdPK 去 StdExamRec 找這個學生最新一筆測驗
+            
             var latestExamId = db.StdExamRec
                                  .Where(x => x.ExamStdPK == stdPk)
-                                 .OrderByDescending(x => x.ExamAnsST)   // 以作答開始時間排序，越新越前面
+                                 .OrderByDescending(x => x.ExamAnsST)   
                                  .Select(x => x.ExamID)
                                  .FirstOrDefault();
 
@@ -150,7 +150,7 @@ namespace 專題MVC修正.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 導到我們剛剛做好的成績報告
+            
             return RedirectToAction("Report", new { examId = latestExamId });
         }
 

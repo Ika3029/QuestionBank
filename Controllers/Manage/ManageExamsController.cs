@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using System.Collections.Generic; // for Dictionary<,>
+using System.Collections.Generic; 
 using 專題MVC修正.Models;
 using 專題MVC修正.Models.DTOs;
 using PagedList;
-using System.Data.Entity; // For Any(), Join(), etc.
+using System.Data.Entity; 
 
 
 namespace 專題MVC修正.Controllers.Manage
@@ -14,7 +14,7 @@ namespace 專題MVC修正.Controllers.Manage
     {
         readonly MQBEntities db = new MQBEntities();
 
-        // ====== 列表 ======
+        // 列表
         public ActionResult Exams_Index(int page = 1, int pageSize = 10)
         {
             var data = db.Set<ExamMaster>()
@@ -23,7 +23,7 @@ namespace 專題MVC修正.Controllers.Manage
             return View(data);
         }
 
-        // ====== 建卷（GET） ======
+        //建卷（GET）
         [HttpGet]
         public ActionResult Exams_Create()
         {
@@ -38,12 +38,12 @@ namespace 專題MVC修正.Controllers.Manage
             return View();
         }
 
-        // ====== 建卷（POST） ======
+        // 建卷（POST）
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Exams_Create(
             string ExamName,
-            int MQBClassPK,          // 必選
-            int? MQBTeamPK,          // 可選
+            int MQBClassPK,          
+            int? MQBTeamPK,          
             bool IsRandom,
             int QuestionCount = 10,
             double ScorePerQuestion = 1
@@ -73,11 +73,11 @@ namespace 專題MVC修正.Controllers.Manage
                 ExamEDate = now
             };
             db.Set<ExamMaster>().Add(em);
-            db.SaveChanges(); // 取得 ExamID
+            db.SaveChanges(); 
 
             if (IsRandom)
             {
-                // 過濾後抽題
+                
                 var qset = db.Set<MoodQuestionBank>().Where(q => q.QClass == MQBClassPK);
                 if (MQBTeamPK.HasValue) qset = qset.Where(q => q.MQBTeamPK == MQBTeamPK.Value);
 
@@ -114,7 +114,7 @@ namespace 專題MVC修正.Controllers.Manage
             });
         }
 
-        // ====== 手動挑題（GET） ======
+        // 手動挑題（GET）
         [HttpGet]
         public ActionResult SelectQuestions(
             int id,
@@ -132,22 +132,22 @@ namespace 專題MVC修正.Controllers.Manage
             ViewBag.ExamMasterPK = id;
             ViewBag.ScorePerQuestion = score;
 
-            // 下拉來源
+            
             var baseQ = db.Set<MoodQuestionBank>().AsQueryable();
             if (qclass.HasValue) baseQ = baseQ.Where(x => x.QClass == qclass.Value);
             if (team.HasValue) baseQ = baseQ.Where(x => x.MQBTeamPK == team.Value);
 
-            // 科別下拉
+            // 科別
             ViewBag.ClassList = new SelectList(
                 db.Set<MQBClassName>().OrderBy(x => x.MQBClassName1).ToList(),
                 "MQBClassPK", "MQBClassName1", qclass
             );
-            // 題組下拉
+            // 題組
             ViewBag.TeamList = new SelectList(
                 db.Set<MQBTeam>().OrderBy(x => x.MQBTeamContent).ToList(),
                 "MQBTeamPK", "MQBTeamContent", team
             );
-            //其他下拉
+            //其他
             ViewBag.QtypeList = new SelectList(
                 baseQ.Select(x => x.QType).Distinct().OrderBy(x => x)
                      .Select(x => new { Value = x, Text = x.ToString() }).ToList(),
@@ -164,7 +164,7 @@ namespace 專題MVC修正.Controllers.Manage
                 "Value", "Text", session
             );
 
-            // 保留目前篩選值
+            
             ViewBag.QClass = qclass;
             ViewBag.Team = team;
             ViewBag.QType = qtype;
@@ -172,7 +172,7 @@ namespace 專題MVC修正.Controllers.Manage
             ViewBag.Session = session;
             ViewBag.Keyword = keyword;
 
-            // 主查詢
+            
             var query = from q in db.Set<MoodQuestionBank>()
                         join c in db.Set<MQBClassName>() on q.QClass equals c.MQBClassPK
                         join t0 in db.Set<MQBTeam>() on q.MQBTeamPK equals t0.MQBTeamPK into tj
@@ -220,7 +220,7 @@ namespace 專題MVC修正.Controllers.Manage
         }
 
 
-        // ====== 手動挑題（POST） ======
+        //手動挑題（POST）
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult SelectQuestions(int examMasterPK, double scorePerQuestion, int[] selectedQIds)
         {
@@ -250,7 +250,7 @@ namespace 專題MVC修正.Controllers.Manage
             return RedirectToAction("Details", new { id = examMasterPK });
         }
 
-        // ====== 明細 ======
+        //明細
         public ActionResult Details(int id)
         {
             var exam = db.Set<ExamMaster>().Find(id);
@@ -269,14 +269,14 @@ namespace 專題MVC修正.Controllers.Manage
                                       QContent = q.QContent,
                                       QAns = q.QAns
                                   })
-                            .OrderBy(x => x.ExamDetPK) // 或 SortOrder
+                            .OrderBy(x => x.ExamDetPK) 
                             .ToList();
 
             var vm = new ExamDetailsVM { Exam = exam, Details = details };
             return View(vm);
         }
 
-        // ====== 明細：移除單題 ======
+        
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult RemoveDetail(int id)
         {
@@ -289,12 +289,12 @@ namespace 專題MVC修正.Controllers.Manage
             return RedirectToAction("Details", new { id = examId });
         }
 
-        // ======（新）考試流程：StartExam / SubmitExam（Session 版） ======
+        // 考試流程
         public class ExamRunQuestionVM
         {
             public int ExamID { get; set; }
-            public int Index { get; set; }      // 第幾題（1-based）
-            public int Total { get; set; }      // 題數
+            public int Index { get; set; }      
+            public int Total { get; set; }      
             public int ExamDetPK { get; set; }
             public int MQBPK { get; set; }
             public string QContent { get; set; }
@@ -302,8 +302,8 @@ namespace 專題MVC修正.Controllers.Manage
             public string QOptionB { get; set; }
             public string QOptionC { get; set; }
             public string QOptionD { get; set; }
-            public string CorrectAns { get; set; } // 用於最後對答案
-            public string Selected { get; set; }   // 目前使用者選擇（從 Session 帶回）
+            public string CorrectAns { get; set; } 
+            public string Selected { get; set; }   
         }
 
         public class ExamRunResultVM
@@ -318,11 +318,11 @@ namespace 專題MVC修正.Controllers.Manage
 
         const string ExamSessionPrefix = "ExamRun_";
 
-        // 開始考試 / 單題作答頁（GET）
+        // 開始考試 
         [HttpGet]
         public ActionResult StartExam(int id, int index = 1)
         {
-            // 先確認有沒有登入
+            
             if (Session["StdPK"] == null)
             {
                 TempData["LoginError"] = "請先登入學生帳號再作答。";
@@ -371,7 +371,7 @@ namespace 專題MVC修正.Controllers.Manage
 
             var row = qList[index - 1];
 
-            // 讀取 Session 已選答案
+            
             var key = ExamSessionPrefix + id;
             var ansDict = Session[key] as Dictionary<int, string>;
             if (ansDict == null) { ansDict = new Dictionary<int, string>(); Session[key] = ansDict; }
@@ -398,7 +398,7 @@ namespace 專題MVC修正.Controllers.Manage
         }
 
 
-        // 單題作答（POST）：保存選擇並導覽
+        // 單題作答（POST）
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult StartExam(int examId, int mqbpk, int index, string choice, string nav)
         {
@@ -447,12 +447,12 @@ namespace 專題MVC修正.Controllers.Manage
                 detail.Add((no, userAns ?? "", it.QAns ?? "", it.QContent));
             }
 
-            // 交卷後清掉「答案暫存」
+            
             Session.Remove(key);
 
-            // ========= 這裡開始：寫入 StdExamRec =========
+            
 
-            // 1) 從登入 Session 取得 StdPK
+            
             if (Session["StdPK"] == null)
             {
                 TempData["err"] = "找不到學生登入資訊，無法寫入作答紀錄。請重新登入後再試。";
@@ -462,7 +462,7 @@ namespace 專題MVC修正.Controllers.Manage
             int stdPK = 0;
             int.TryParse(Session["StdPK"].ToString(), out stdPK);
 
-            // 2) 確認 Std 表中真的有這個人
+            
             bool stdExists = stdPK > 0 && db.Std.Any(s => s.StdPK == stdPK);
             if (!stdExists)
             {
@@ -471,7 +471,7 @@ namespace 專題MVC修正.Controllers.Manage
             }
 
             
-            // 4) 寫入每一題的紀錄
+            
             var now = System.DateTime.Now;
             foreach (var it in list)
             {
@@ -485,10 +485,10 @@ namespace 專題MVC修正.Controllers.Manage
                     ExamDetPK = it.ExamDetPK,
                     ExamMQBPK = it.MQBPK,
                     ExamDefaultScore = it.ExamDefaultScore ?? 1,
-                    ExamAns = correctAns,         // 標準答案
-                    ExamStdPK = stdPK,            // 這就是 FK 指向 dbo.Std(StdPK)
-                    ExamStdAns = userAns,         // 學生答案
-                    ExamAnsST = now,              // 目前先用 now，之後要記實際作答時間再改
+                    ExamAns = correctAns,         
+                    ExamStdPK = stdPK,            
+                    ExamStdAns = userAns,         
+                    ExamAnsST = now,              
                     ExamAnsET = now,
                     ExamStdAnsRight = isRight ? "G" : "E",
                     ExamEmotion = null
@@ -498,7 +498,7 @@ namespace 專題MVC修正.Controllers.Manage
             }
             db.SaveChanges();
 
-            // ========= StdExamRec 寫入完成 =========
+            
 
             var vm = new ExamRunResultVM
             {
