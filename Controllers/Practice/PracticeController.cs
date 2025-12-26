@@ -10,14 +10,14 @@ namespace 專題MVC修正.Controllers.User
     {
         private readonly MQBEntities db = new MQBEntities();
 
-        // 小型 DTO 只給 Raw SQL 投影用
+        
         private class ClassItem
         {
-            public int Id { get; set; }        // MQBClassPK
-            public string Name { get; set; }   // MQBClassName
+            public int Id { get; set; }       
+            public string Name { get; set; }   
         }
 
-        // 進入條件頁：下拉顯示中文科別名稱（Raw SQL JOIN，避免 EDMX 屬性名不一致）
+        
         [HttpGet]
         public ActionResult Index()
         {
@@ -30,7 +30,7 @@ ORDER BY c.MQBClassPK";
             var classItems = db.Database.SqlQuery<ClassItem>(sql).ToList();
 
             ViewBag.ClassList = new SelectList(classItems, "Id", "Name");
-            return View(); // Views/Practice/Index.cshtml
+            return View(); 
         }
 
         // 抽一題
@@ -48,7 +48,7 @@ ORDER BY c.MQBClassPK";
                 return RedirectToAction(nameof(Index));
             }
 
-            // 取中文名稱（Raw SQL，避免 EDMX 命名差異）
+            
             var className = db.Database
                               .SqlQuery<string>(
                                   "SELECT TOP 1 MQBClassName FROM dbo.MQBClassName WHERE MQBClassPK = @p0",
@@ -83,7 +83,7 @@ ORDER BY c.MQBClassPK";
             return View("Single", vm);
         }
 
-        // Table → VM（所有圖片欄位統一丟 ToImageSrc(object)）
+        
         private static PracticeVM ToVM(MoodQuestionBank q, int classId, string className)
         {
             return new PracticeVM
@@ -110,12 +110,12 @@ ORDER BY c.MQBClassPK";
             };
         }
 
-        // 單一 helper：同一招吃 byte[] 或 string（確保只有這個版本，刪掉其它多載）
+        
         private static string ToImageSrc(object imgData, string mime = "image/png")
         {
             if (imgData == null) return null;
 
-            // 若為 byte[] → 轉 data URL
+            
             var bytes = imgData as byte[];
             if (bytes != null && bytes.Length > 0)
             {
@@ -123,7 +123,7 @@ ORDER BY c.MQBClassPK";
                 return $"data:{mime};base64,{b64}";
             }
 
-            // 若為 string（實體路徑或 URL）→ 原樣回傳
+            
             var s = imgData as string;
             if (!string.IsNullOrWhiteSpace(s)) return s;
 

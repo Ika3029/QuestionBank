@@ -12,7 +12,7 @@ namespace 專題MVC修正.Controllers.Manage
     {
         MQBEntities db = new MQBEntities();
 
-        // 題庫列表 + 搜尋 + 分頁
+        
         public ActionResult Questions_Index(string MQBTeamPK, string searchString, int page = 1)
         {
             int pageSize = 10;
@@ -39,7 +39,7 @@ namespace 專題MVC修正.Controllers.Manage
                 db.MQBTeam.OrderBy(x => x.MQBTeamContent),
                 "MQBTeamPK", "MQBTeamContent");
 
-            // ⬇️ 用 QClass (連到 MQBClassName.MQBClassPK)
+            
             ViewBag.QClass = new SelectList(
                 db.MQBClassName.OrderBy(x => x.MQBClassName1),
                 "MQBClassPK", "MQBClassName1");
@@ -52,11 +52,11 @@ namespace 專題MVC修正.Controllers.Manage
         [ValidateAntiForgeryToken]
         public ActionResult Questions_Create(MoodQuestionBank m)
         {
-            // 題組驗證
+            
             if (m.MQBTeamPK <= 0 || !db.MQBTeam.Any(t => t.MQBTeamPK == m.MQBTeamPK))
                 ModelState.AddModelError("MQBTeamPK", "請選擇有效的題組");
 
-            // ⬇️ 類別驗證 (QClass)
+            
             if (m.QClass <= 0 || !db.MQBClassName.Any(c => c.MQBClassPK == m.QClass))
                 ModelState.AddModelError("QClass", "請選擇有效的分類");
 
@@ -76,7 +76,7 @@ namespace 專題MVC修正.Controllers.Manage
                 return View(m);
             }
 
-            // 排序（同題組最大 + 1）
+            
             m.MQBSort = (db.MoodQuestionBank
                             .Where(x => x.MQBTeamPK == m.MQBTeamPK)
                             .Select(x => (int?)x.MQBSort).Max() ?? 0) + 1;
@@ -106,8 +106,8 @@ namespace 專題MVC修正.Controllers.Manage
 
 
 
-        // 編輯
-        // ========== 共同方法：重綁下拉 ==========
+        
+        
         private void BuildDropDownsForEdit(專題MVC修正.Models.MoodQuestionBank m)
         {
             ViewBag.MQBTeamPK = new SelectList(
@@ -119,7 +119,7 @@ namespace 專題MVC修正.Controllers.Manage
                 "MQBClassPK", "MQBClassName1", m.QClass);
         }
 
-        // ========== GET: 編輯 ==========
+        //GET編輯
         [HttpGet]
         public ActionResult Questions_Edit(int? id)
         {
@@ -132,7 +132,7 @@ namespace 專題MVC修正.Controllers.Manage
             return View(e);
         }
 
-        // ========== POST: 編輯 ==========
+        //POST編輯
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Questions_Edit(專題MVC修正.Models.MoodQuestionBank m)
@@ -146,7 +146,7 @@ namespace 專題MVC修正.Controllers.Manage
             var e = db.MoodQuestionBank.Find(m.MQBPK);
             if (e == null) return HttpNotFound();
 
-            // ✅ 僅更新允許的欄位（避免把其他欄位清空）
+            
             e.MQBTeamPK = m.MQBTeamPK;
             e.QClass = m.QClass;
             e.QType = m.QType;
@@ -156,7 +156,7 @@ namespace 專題MVC修正.Controllers.Manage
             e.QOptionC = m.QOptionC;
             e.QOptionD = m.QOptionD;
             e.QAns = m.QAns;
-            // e.MQBSort   視情況是否允許修改
+            
 
             db.SaveChanges();
 

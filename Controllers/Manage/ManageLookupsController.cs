@@ -9,7 +9,7 @@ namespace 專題MVC修正.Controllers.Manage
     {
         private readonly MQBEntities db = new MQBEntities();
 
-        // 題組：新增（AJAX）— 綁定到指定的 MQBClassName
+        // 題組
         [HttpPost]
         public ActionResult AddTeam(string name, int mqbClassPk, string yn = "N")
         {
@@ -23,12 +23,12 @@ namespace 專題MVC修正.Controllers.Manage
 
                 name = name.Trim();
 
-                // 找出對應的分類
+                
                 var cls = db.MQBClassName.Find(mqbClassPk);
                 if (cls == null)
                     return Json(new { ok = false, err = "找不到對應的分類(QClass)，請重新整理後再試。" });
 
-                // 防重複：同一分類底下，不允許同名題組
+                
                 var exists = db.MQBTeam.Any(x =>
                     x.MQBTeamContent == name &&
                     x.MQBClassName.MQBClassPK == mqbClassPk);
@@ -40,7 +40,7 @@ namespace 專題MVC修正.Controllers.Manage
                 {
                     MQBTeamContent = name,
                     MQBTeamYN = string.IsNullOrWhiteSpace(yn) ? "N" : yn,
-                    // 用導覽屬性設定 FK
+                    
                     MQBClassName = cls
                 };
 
@@ -66,7 +66,7 @@ namespace 專題MVC修正.Controllers.Manage
             }
         }
 
-        // 類別：新增（AJAX）
+        // 類別
         [HttpPost]
         public ActionResult AddClass(string name)
         {

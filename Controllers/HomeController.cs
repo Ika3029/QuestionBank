@@ -14,13 +14,13 @@ namespace 專題MVC修正.Controllers
         
         public ActionResult Index()
         {
-            var MoodQuestionBank = db.MoodQuestionBank.OrderByDescending(x => x.MQBSort).ToList(); // 可加 .ToList()
-            return View(MoodQuestionBank); // 若 View 有接收 Model
+            var MoodQuestionBank = db.MoodQuestionBank.OrderByDescending(x => x.MQBSort).ToList(); 
+            return View(MoodQuestionBank); 
         }
 
         public ActionResult Create()
         {
-            return View(); // 若 View 有接收 Model
+            return View(); 
         }
         [HttpPost]
         public ActionResult Create(MoodQuestionBank moodQuestionBank)

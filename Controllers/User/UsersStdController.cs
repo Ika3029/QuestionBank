@@ -8,14 +8,14 @@ using System.Net;
 
 namespace 專題MVC修正.Controllers.User
 {
-    // 傳統路由：/UsersStd/{action}/{id}
+    
     public class UsersStdController : Controller
     {
         private readonly MQBEntities db = new MQBEntities();
         private static string S(object v) => v == null ? "" : v.ToString().Trim();
         private string NG(string g) { g = S(g); return (g == "男") ? "0" : (g == "女") ? "1" : (g == "0" || g == "1") ? g : ""; }
 
-        // 下拉：沿用你原本 ViewBag 名稱
+        
         private void DD(string dep = null, string grade = null, string cls = null, string gender = null)
         {
             ViewBag.StdDep = new SelectList(new[]
@@ -41,7 +41,7 @@ namespace 專題MVC修正.Controllers.User
             { new {Text="男",Value="0"}, new {Text="女",Value="1"} }, "Value", "Text", S(gender));
         }
 
-        // ============ Index（支援科系/年級/班級 + 學號/姓名模糊） ============
+        
         public ActionResult Std_Index(string StdDep, string Grade, string Class, string q)
         {
             DD(StdDep, Grade, Class, null);
@@ -67,7 +67,7 @@ namespace 專題MVC修正.Controllers.User
 
 
 
-        // ============ Create ============
+        //Create
         [HttpGet]
         public ActionResult Std_Create()
         {
@@ -95,7 +95,7 @@ namespace 專題MVC修正.Controllers.User
             if (string.IsNullOrWhiteSpace(m.StdName)) ModelState.AddModelError("StdName", "請輸入姓名");
             if (!ModelState.IsValid) { DD(StdDep, StaffGrade, StaffClass, m.StdGender); return View("Std_Create", m); }
 
-            // 若 StdPK 不是 Identity → Max+1（是 Identity 的話可刪除這段）
+            
             if (m.StdPK == 0) m.StdPK = (db.Std.Select(x => (int?)x.StdPK).Max() ?? 0) + 1;
 
             try { db.Std.Add(m); db.SaveChanges(); return RedirectToAction("Std_Index"); }
@@ -107,7 +107,7 @@ namespace 專題MVC修正.Controllers.User
             }
         }
 
-        // ============ Edit ============
+        //Edit
         [HttpGet]
         public ActionResult Std_Edit(int? id)
         {
@@ -115,7 +115,7 @@ namespace 專題MVC修正.Controllers.User
             var m = db.Std.Find(id);
             if (m == null) return HttpNotFound();
 
-            // 拆回三段供預選
+            
             string dep = "", grade = "", cls = "";
             var parts = S(m.StdDepID).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length >= 1) dep = parts[0];
@@ -152,7 +152,7 @@ namespace 專題MVC修正.Controllers.User
             }
         }
 
-        // ============ Delete ============
+        //Delete
         [HttpGet]
         public ActionResult Std_Delete(int? id)
         {
