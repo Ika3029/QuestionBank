@@ -9,8 +9,8 @@ namespace 專題MVC修正.Models.DTOs
     {
         public int MQBPK { get; set; }
 
-        public int ClassId { get; set; }      // QClass (int)
-        public string ClassName { get; set; } // 顯示用
+        public int ClassId { get; set; }      
+        public string ClassName { get; set; } 
 
         public string Content { get; set; }
         public string ImgContentDataUrl { get; set; }

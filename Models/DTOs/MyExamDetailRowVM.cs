@@ -4,7 +4,7 @@ namespace 專題MVC修正.Models.DTOs
 {
     public class MyExamDetailRowVM
     {
-        public int No { get; set; }              // 題號(1-based)
+        public int No { get; set; }              
         public int? ExamDetPK { get; set; }
 
         public double Score { get; set; }
@@ -15,8 +15,8 @@ namespace 專題MVC修正.Models.DTOs
         public string QOptionC { get; set; }
         public string QOptionD { get; set; }
 
-        public string CorrectAns { get; set; }   // 標準答案
-        public string StdAns { get; set; }       // 學生作答
-        public bool IsCorrect { get; set; }      // 是否答對
+        public string CorrectAns { get; set; }   
+        public string StdAns { get; set; }       
+        public bool IsCorrect { get; set; }      
     }
 }

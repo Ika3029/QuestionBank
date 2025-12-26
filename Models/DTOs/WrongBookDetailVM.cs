@@ -17,7 +17,7 @@ namespace 專題MVC修正.Models.DTOs
         public string OptionC { get; set; }
         public string OptionD { get; set; }
 
-        public string StdAns { get; set; }      // 我最後一次的答案
-        public string CorrectAns { get; set; }  // 正確答案
+        public string StdAns { get; set; }      
+        public string CorrectAns { get; set; }  
     }
 }

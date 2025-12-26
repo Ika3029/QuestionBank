@@ -14,7 +14,7 @@ namespace 專題MVC修正.Models.DTOs
         public double TotalScore { get; set; }
         public DateTime FinishTime { get; set; }
 
-        // 用來區分同一張考卷的不同「批次」
-        public long AttemptTicks { get; set; }  // 就是 FinishTime.Ticks
+        
+        public long AttemptTicks { get; set; }  
     }
 }
